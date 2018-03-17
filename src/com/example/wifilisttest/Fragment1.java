@@ -224,7 +224,7 @@ public class Fragment1 extends ListFragment   {
     		wifiCon.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);          	
             wifiCon.status = WifiConfiguration.Status.ENABLED; */
             
-            NetID = wifiManager.addNetwork(wifiCon);
+            //NetID = wifiManager.addNetwork(wifiCon);
             /*for (WifiConfiguration c:wifiConfigList){
                 wifiManager.disableNetwork(c.networkId);
             }*/
@@ -260,7 +260,7 @@ public class Fragment1 extends ListFragment   {
  			            startActivity(intent);
       				break;
       			 }
-      			 if(manager.getActiveNetworkInfo() != null){
+      			 else if(manager.getActiveNetworkInfo() != null){
       			     flag = manager.getActiveNetworkInfo().isAvailable();
       			     if (flag) {
       					   Intent intent = new Intent(getActivity(),Trans.class); 
