@@ -24,8 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.channels.SocketChannel;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,7 +49,7 @@ import com.example.wifilisttest.ProgressWheel;
 
 public class Trans2 extends Activity {
 
-	
+	private SocketChannel socketChannel = null;
 	private ProgressWheel pwTwo;
 	boolean wheelRunning;
 	int wheelProgress = 0, pieProgress = 0;
@@ -112,17 +115,25 @@ public class Trans2 extends Activity {
 		actionBar.setDisplayHomeAsUpEnabled(true);
        
         SQLiteDatabase db = sqlHelper.getWritableDatabase();
-        Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
+        
+        
+        String sql = "select count(*) from Tenghan";  
+        Cursor cursor = db.rawQuery(sql, null);  
+        cursor.moveToFirst();  
+        long count = cursor.getLong(0);  
+        
+        
+        /*Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
         	if (c.moveToFirst()) {
         		do {
         			String strValue= c.getString(12);
-        			if(strValue.equals("0")){
+        			if(strValue.equals("3")){
     					count++;
         			}
         			//count++;
         		}while(c.moveToNext());
         }
-        	String cou=Integer.toString(count);
+        	String cou=Integer.toString(count);*/
         	pwTwo.setText("待上传数据"+count+"条");
         	if(count!=0){
         		startBtn1.setEnabled(true);
@@ -308,9 +319,9 @@ public class Trans2 extends Activity {
                     if(str3.equals("FE23FD")){*/
                     	
                     	
-                    	 // 创建Socket对象 & 指定服务端的IP 及 端口号
+                    	/* // 创建Socket对象 & 指定服务端的IP 及 端口号
                         try {
-							socket = new Socket("121.196.222.216", 5555);
+							socket = new Socket("10.1.12.168", 5555);
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -325,19 +336,19 @@ public class Trans2 extends Activity {
                         }
                         
                         // 判断客户端和服务器是否连接成功
-                        System.out.println(socket.isConnected());
+                        System.out.println(socket.isConnected());*/
                     	
             	
-                        String i="0";
-                        String o="FE24";
-                        String p="00000000FD";
-                        String l="";
-                        int b=0;
-                        SQLiteDatabase db = sqlHelper.getWritableDatabase();
-                        String inSql;
-                        Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
- 			           	if (c.moveToFirst()) {
- 			                do {
+                    String i="0";
+                    String o="FE24";
+                    String p="00000000FD";
+                    String l="";
+                    int b=0;
+                    SQLiteDatabase db = sqlHelper.getWritableDatabase();
+                    String inSql;
+                    Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
+		           	if (c.moveToFirst()) {
+		                 do {
  			                    String electricity = c.getString(c.getColumnIndex("electricity"));
  			                    if(electricity.length()!=4){
  			                    	int a=4-electricity.length();
@@ -345,266 +356,287 @@ public class Trans2 extends Activity {
  			                    		electricity=i+electricity;
  			                    	}
  			                    }
- 			                    String voltage = c.getString(c.getColumnIndex("voltage"));
+ 			                   String voltage = c.getString(c.getColumnIndex("voltage"));
  			                   if(voltage.length()!=4){
 			                    	int a=4-voltage.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		voltage=i+voltage;
 			                    	}
 			                    }
- 			                    String sensor_Num = c.getString(c.getColumnIndex("sensor_Num"));
+ 			                   String sensor_Num = c.getString(c.getColumnIndex("sensor_Num"));
  			                   if(sensor_Num.length()!=4){
    			                    	int a=4-sensor_Num.length();
    			                    	for(int ii=0;ii<a;ii++){
    			                    		sensor_Num=i+sensor_Num;
    			                    	}
    			                    }
- 			                    String machine_id = c.getString(c.getColumnIndex("machine_id"));
+ 			                   String machine_id = c.getString(c.getColumnIndex("machine_id"));
  			                   if(machine_id.length()!=4){
 			                    	int a=4-machine_id.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		machine_id=i+machine_id;
 			                    	}
 			                    }
- 			                    String welder_id = c.getString(c.getColumnIndex("welder_id"));
+ 			                   String welder_id = c.getString(c.getColumnIndex("welder_id"));
  			                   if(welder_id.length()!=4){
 			                    	int a=4-welder_id.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		welder_id=i+welder_id;
 			                    	}
 			                    }
- 			                    String code = c.getString(c.getColumnIndex("code"));
+ 			                   String code = c.getString(c.getColumnIndex("code"));
  			                   if(code.length()!=8){
 			                    	int a=8-code.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		code=i+code;
 			                    	}
 			                    }
- 			                    String year = c.getString(c.getColumnIndex("year"));
+ 			                   String year = c.getString(c.getColumnIndex("year"));
  			                   if(year.length()!=2){
 			                    	int a=2-year.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		year=i+year;
 			                    	}
 			                    }
- 			                    String month = c.getString(c.getColumnIndex("month"));
+ 			                   String month = c.getString(c.getColumnIndex("month"));
  			                   if(month.length()!=2){
 			                    	int a=2-month.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		month=i+month;
 			                    	}
 			                    }
- 			                    String day = c.getString(c.getColumnIndex("day"));
+ 			                   String day = c.getString(c.getColumnIndex("day"));
  			                   if(day.length()!=2){
 			                    	int a=2-day.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		day=i+day;
 			                    	}
 			                    }
- 			                    String hour = c.getString(c.getColumnIndex("hour"));
+ 			                   String hour = c.getString(c.getColumnIndex("hour"));
  			                   if(hour.length()!=2){
 			                    	int a=2-hour.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		hour=i+hour;
 			                    	}
 			                    }
- 			                    String minute = c.getString(c.getColumnIndex("minute"));
+ 			                   String minute = c.getString(c.getColumnIndex("minute"));
  			                   if(minute.length()!=2){
 			                    	int a=2-minute.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		minute=i+minute;
 			                    	}
 			                    }
- 			                    String second = c.getString(c.getColumnIndex("second"));
+ 			                   String second = c.getString(c.getColumnIndex("second"));
  			                   if(second.length()!=2){
 			                    	int a=2-second.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		second=i+second;
 			                    	}
 			                    }
- 			                    String status = c.getString(c.getColumnIndex("status"));
+ 			                   String status = c.getString(c.getColumnIndex("status"));
  			                   if(status.length()!=2){
 			                    	int a=2-status.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		status=i+status;
 			                    	}
 			                    }
- 			                  
- 			
-			                        l = l + o + electricity + voltage + sensor_Num 
-			                        		+ machine_id + welder_id + code + year 
-			                        		+ month + day + hour + minute + second + status + p;
-			                        
-			                        String sql = "update Tenghan set status = 01";   
-			                        //执行SQL   
-			                        db.execSQL(sql);
+		                  
+		
+		                        l = l + o + electricity + voltage + sensor_Num 
+		                        		+ machine_id + welder_id + code + year 
+		                        		+ month + day + hour + minute + second + status + p;
+		                        
+		                        /*String sql = "update Tenghan set status = 01";   
+		                        //执行SQL   
+		                        db.execSQL(sql);*/
 
-			                        b++;
-				                    int d=Math.round(((float) b / c.getCount() ) * 360);
-	                                pwTwo.setProgress(d);
-	                                wheelProgress=d;   
-	                                
-	                                Thread.sleep(20);
-	                                
-			                        //pwTwo.incrementProgress();
-			            			//wheelProgress++;
-			                        
+		                        b++;
+			                    int d=Math.round(((float) b / c.getCount() ) * 360);
+                                pwTwo.setProgress(d);
+                                wheelProgress=d;   
                                 
-                                System.out.println(l);   
-                            } while (c.moveToNext());
-                        }
-                        c.close();
-                        
-                        byte[] bb3=new byte[l.length()/2];
-						for (int i1 = 0; i1 < bb3.length; i1++)
-						{
-							String tstr1=l.substring(i1*2, i1*2+2);
-							Integer k=Integer.valueOf(tstr1, 16);
-							bb3[i1]=(byte)k.byteValue();
-						}
-                        
-                        try {
-                        	//发送消息
-                            // 步骤1：从Socket 获得输出流对象OutputStream
-                            // 该对象作用：发送数据
-                            outputStream = socket.getOutputStream();
-
-                            // 步骤2：写入需要发送的数据到输出流对象中
-                            outputStream.write(bb3);
-                            // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
-
-                            // 步骤3：发送数据到服务端
-                            outputStream.flush();
+                                Thread.sleep(20);
+                                
+		                        //pwTwo.incrementProgress();
+		            			//wheelProgress++;
+		                        
                             
-                            response = l;
+                            System.out.println(l);   
+                        } while (c.moveToNext());
+                    }
+                    c.close();
+                    
+                    
+                    try {    
+ 		            	if(socketChannel==null){
+ 		            		socketChannel = SocketChannel.open(); 
+     		                SocketAddress socketAddress = new InetSocketAddress("192.168.21.100", 5555);    
+     		                socketChannel.connect(socketAddress);
+ 		            	}
+ 		            	
+ 		                SendAndReceiveUtil.sendData(socketChannel, l); 
+ 		                    
+ 		                /*String msg = SendAndReceiveUtil.receiveData(socketChannel);    
+ 		                if(msg != null) 
+ 		                	System.out.println(msg);*/
 
-         		           
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    /*} catch (IOException e) {
+ 		            
+ 		            } catch (Exception ex) {    
+ 		                ex.printStackTrace();  
+ 		            }
+                    
+                    
+                    
+                    /*byte[] bb3=new byte[l.length()/2];
+					for (int i1 = 0; i1 < bb3.length; i1++)
+					{
+						String tstr1=l.substring(i1*2, i1*2+2);
+						Integer k=Integer.valueOf(tstr1, 16);
+						bb3[i1]=(byte)k.byteValue();
+					}
+                    
+                    try {
+                    	//发送消息
+                        // 步骤1：从Socket 获得输出流对象OutputStream
+                        // 该对象作用：发送数据
+                        outputStream = socket.getOutputStream();
+
+                        // 步骤2：写入需要发送的数据到输出流对象中
+                        outputStream.write(bb3);
+                        // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
+
+                        // 步骤3：发送数据到服务端
+                        outputStream.flush();
+                        
+                        response = l;
+
+     		           
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }*/
-                
-                        try {
-        					Thread.sleep(1000);
-        				} catch (InterruptedException p2) {
-        					p2.printStackTrace();
-        				}
-        				
-        				Toast.makeText(getApplicationContext(), "上传成功", Toast.LENGTH_LONG).show();
-        	            Intent i2 = new Intent(Trans2.this ,Ok2.class);
-        	            startActivity(i2); 
+                /*} catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+            
+                    try {
+    					Thread.sleep(1000);
+    				} catch (InterruptedException p2) {
+    					p2.printStackTrace();
+    				}
+    				
+    				Toast.makeText(getApplicationContext(), "上传成功", Toast.LENGTH_LONG).show();
+    	            Intent i2 = new Intent(Trans2.this ,Ok2.class);
+    	            startActivity(i2); 
+                    
+                   /* try{
+
+                    	String bb1="FE255555555555555555550EFD";
+					    byte[] bbb1=new byte[bb1.length()/2];
+
+						for (int i3 = 0; i3 < bbb1.length; i3++)
+						{
+							String tstr1=bb1.substring(i3*2, i3*2+2);
+							Integer k=Integer.valueOf(tstr1, 16);
+							bbb1[i3]=(byte)k.byteValue();
+						}
+                    	
+                    	
+                        // 创建Socket对象 & 指定服务端的IP 及 端口号
+                        socket = new Socket("192.168.1.8", 1001);
                         
-                       /* try{
-
-                        	String bb1="FE255555555555555555550EFD";
-						    byte[] bbb1=new byte[bb1.length()/2];
-
-							for (int i3 = 0; i3 < bbb1.length; i3++)
-							{
-								String tstr1=bb1.substring(i3*2, i3*2+2);
-								Integer k=Integer.valueOf(tstr1, 16);
-								bbb1[i3]=(byte)k.byteValue();
-							}
-                        	
-                        	
-                            // 创建Socket对象 & 指定服务端的IP 及 端口号
-                            socket = new Socket("192.168.1.8", 1001);
-                            
-                            
-                            
-                            boolean j33=socket.isConnected();
-                            if(j33){
-                            	Toast.makeText(getApplicationContext(), "服务器连接成功", Toast.LENGTH_LONG).show();
-                            }
-                            else{
-                            	Toast.makeText(getApplicationContext(), "服务器连接失败", Toast.LENGTH_LONG).show();
-                            }
-                            
-                            // 判断客户端和服务器是否连接成功
-                            System.out.println(socket.isConnected());
-                            
-                          //发送消息
-                            // 步骤1：从Socket 获得输出流对象OutputStream
-                            // 该对象作用：发送数据
-                            outputStream = socket.getOutputStream();
-
-                            // 步骤2：写入需要发送的数据到输出流对象中
-                            outputStream.write(bbb1);
-                            // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
-
-                            // 步骤3：发送数据到服务端
-                            outputStream.flush();
-                               
-                            //接收消息
-                            // 步骤1：创建输入流对象InputStream
-                            is = socket.getInputStream();
-                            // 步骤2：创建输入流读取器对象 并传入输入流对象
-                            // 该对象作用：获取服务器返回的数据
-                            br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-
-                            
-                            //得到长度
-                            String datab1 = br.readLine();
-                            int lenb1 = datab1.length();
-                            
-                            
-                            //发送消息
-                            // 步骤1：从Socket 获得输出流对象OutputStream
-                            // 该对象作用：发送数据
-                            outputStream = socket.getOutputStream();
-
-                            // 步骤2：写入需要发送的数据到输出流对象中
-                            outputStream.write(bbb1);
-                            // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
-
-                            // 步骤3：发送数据到服务端
-                            outputStream.flush();
-                               
-                            //接收消息
-                            // 步骤1：创建输入流对象InputStream
-                            is = socket.getInputStream();
-                            // 步骤2：创建输入流读取器对象 并传入输入流对象
-                            // 该对象作用：获取服务器返回的数据
-                            br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-                            
-                            
-                            byte[] datasb1 = new byte[lenb1]; 
-                            is.read(datasb1);
-                            String strb1 = "";
-                            for(int i2=0;i2<datasb1.length;i2++){
-                            	if(datasb1[i2]<0){
-                            		String r = Integer.toHexString(datasb1[i2]+256);
-                            		String rr=r.toUpperCase();
-                                	System.out.print(rr);
-                                	if(rr.length()==1)
-                            			rr='0'+rr;
-                            		strb1+=rr;
-                            		System.out.print(strb1);
-                            	}
-                            	else{
-                            		String r = Integer.toHexString(datasb1[i2]);
-                                	System.out.print(r);
-                                	if(r.length()==1)
-                            			r='0'+r;
-                            		strb1+=r;
-                            		System.out.print(strb1);
-                            	}
-                            }
-                            String strb2 = strb1.substring(0, 4);
-                            String strb3 = strb1.substring(24, 26);
-                            String strb4 = strb2+strb3;
-                            
-                            if(strb4.equals("FE16FD")){
-                            	socket.close();
-                            }
                         
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }*/
-					
-					
+                        
+                        boolean j33=socket.isConnected();
+                        if(j33){
+                        	Toast.makeText(getApplicationContext(), "服务器连接成功", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                        	Toast.makeText(getApplicationContext(), "服务器连接失败", Toast.LENGTH_LONG).show();
+                        }
+                        
+                        // 判断客户端和服务器是否连接成功
+                        System.out.println(socket.isConnected());
+                        
+                      //发送消息
+                        // 步骤1：从Socket 获得输出流对象OutputStream
+                        // 该对象作用：发送数据
+                        outputStream = socket.getOutputStream();
+
+                        // 步骤2：写入需要发送的数据到输出流对象中
+                        outputStream.write(bbb1);
+                        // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
+
+                        // 步骤3：发送数据到服务端
+                        outputStream.flush();
+                           
+                        //接收消息
+                        // 步骤1：创建输入流对象InputStream
+                        is = socket.getInputStream();
+                        // 步骤2：创建输入流读取器对象 并传入输入流对象
+                        // 该对象作用：获取服务器返回的数据
+                        br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+
+                        
+                        //得到长度
+                        String datab1 = br.readLine();
+                        int lenb1 = datab1.length();
+                        
+                        
+                        //发送消息
+                        // 步骤1：从Socket 获得输出流对象OutputStream
+                        // 该对象作用：发送数据
+                        outputStream = socket.getOutputStream();
+
+                        // 步骤2：写入需要发送的数据到输出流对象中
+                        outputStream.write(bbb1);
+                        // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
+
+                        // 步骤3：发送数据到服务端
+                        outputStream.flush();
+                           
+                        //接收消息
+                        // 步骤1：创建输入流对象InputStream
+                        is = socket.getInputStream();
+                        // 步骤2：创建输入流读取器对象 并传入输入流对象
+                        // 该对象作用：获取服务器返回的数据
+                        br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                        
+                        
+                        byte[] datasb1 = new byte[lenb1]; 
+                        is.read(datasb1);
+                        String strb1 = "";
+                        for(int i2=0;i2<datasb1.length;i2++){
+                        	if(datasb1[i2]<0){
+                        		String r = Integer.toHexString(datasb1[i2]+256);
+                        		String rr=r.toUpperCase();
+                            	System.out.print(rr);
+                            	if(rr.length()==1)
+                        			rr='0'+rr;
+                        		strb1+=rr;
+                        		System.out.print(strb1);
+                        	}
+                        	else{
+                        		String r = Integer.toHexString(datasb1[i2]);
+                            	System.out.print(r);
+                            	if(r.length()==1)
+                        			r='0'+r;
+                        		strb1+=r;
+                        		System.out.print(strb1);
+                        	}
+                        }
+                        String strb2 = strb1.substring(0, 4);
+                        String strb3 = strb1.substring(24, 26);
+                        String strb4 = strb2+strb3;
+                        
+                        if(strb4.equals("FE16FD")){
+                        	socket.close();
+                        }
+                    
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+				
+				
 					
 					
             	

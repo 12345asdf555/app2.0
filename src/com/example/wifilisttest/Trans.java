@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.renderscript.Sampler.Value;
 import android.view.*;
 import android.widget.Button;
@@ -130,12 +131,11 @@ public class Trans extends Activity {
     /**
      * 按钮 变量
      */
-
-    
     protected SQLiteDatabase db;
     
     private MySQLiteOpenHelper sqlHelper;
    
+    byte[] datas1 ;
     boolean flag = false;
 	int now=0;
 	int all=0;
@@ -143,6 +143,12 @@ public class Trans extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	ProgressWheel ProgressWheel = new ProgressWheel(this);  
         super.onCreate(savedInstanceState);
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+        		.detectDiskReads().detectDiskWrites().detectNetwork()
+        		.penaltyLog().build());
+        		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+        		.detectLeakedSqlLiteObjects().penaltyLog().penaltyDeath()
+        		.build());
         setContentView(R.layout.trans);
         sqlHelper = new MySQLiteOpenHelper(this, "StuDatabase.db", null, 2);
         ActionBar actionBar = getActionBar();
@@ -180,11 +186,281 @@ public class Trans extends Activity {
 		startBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (!wheelRunning) {
-					wheelProgress = 0;
-					pwTwo.resetCount();
-					new Thread(a).start();
+					
+					
+					/*wheelProgress = 0;
+					pwTwo.resetCount();*/
+					//new Thread(a).start();
+					
+					
+					
+					
+					
+					
+					
+					int u=0;
+					int o=0;
+					wheelRunning = true;
+					//while (wheelProgress < 360){
+						try {
+	                    	String b="FE115555555555555555550EFD";
+						    byte[] bb=new byte[b.length()/2];
+
+							for (int i = 0; i < bb.length; i++)
+							{
+								String tstr1=b.substring(i*2, i*2+2);
+								Integer k=Integer.valueOf(tstr1, 16);
+								bb[i]=(byte)k.byteValue();
+							}
+	                    	
+	                        // 创建Socket对象 & 指定服务端的IP 及 端口号
+	                        socket = new Socket("192.168.1.8", 1001);
+	                        
+	                        
+	                        boolean j=socket.isConnected();
+	                        if(j){
+	                        	Toast.makeText(getApplicationContext(), "服务器连接成功", Toast.LENGTH_LONG).show();
+	                        }
+	                        else{
+	                        	Toast.makeText(getApplicationContext(), "服务器连接失败", Toast.LENGTH_LONG).show();
+	                        }
+	                        
+	                        // 判断客户端和服务器是否连接成功
+	                        System.out.println(socket.isConnected());
+	                        
+	                      //发送消息
+	                        // 步骤1：从Socket 获得输出流对象OutputStream
+	                        // 该对象作用：发送数据
+	                        outputStream = socket.getOutputStream();
+
+	                        // 步骤2：写入需要发送的数据到输出流对象中
+	                        outputStream.write(bb);
+	                        // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
+
+	                        // 步骤3：发送数据到服务端
+	                        outputStream.flush();
+	                           
+	                        //接收消息
+	                        // 步骤1：创建输入流对象InputStream
+	                        is = socket.getInputStream();
+	                        // 步骤2：创建输入流读取器对象 并传入输入流对象
+	                        // 该对象作用：获取服务器返回的数据
+	                        br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+	                        
+	                        
+	                        byte[] datas = new byte[13]; 
+	                        is.read(datas);
+	                        String str = "";
+	                        for(int i=0;i<datas.length;i++){
+	                        	if(datas[i]<0){
+	                        		String r = Integer.toHexString(datas[i]+256);
+	                        		String rr=r.toUpperCase();
+	                            	System.out.print(rr);
+	                            	if(rr.length()==1)
+	                        			rr='0'+rr;
+	                        		str+=rr;
+	                        		System.out.print(str);
+	                        	}
+	                        	else{
+	                        		String r = Integer.toHexString(datas[i]);
+	                            	System.out.print(r);
+	                            	if(r.length()==1)
+	                        			r='0'+r;
+	                        		str+=r;
+	                        		System.out.print(str);
+	                        	}
+	                        }
+	                        String str1 = str.substring(0, 4);
+	                        String str2 = str.substring(24, 26);
+	                        String str3 = str1+str2;
+	                        
+	                        String strc = str.substring(4, 12);
+	                        Integer num=Integer.valueOf(strc, 16) * 24 * 28 ;
+	                        
+	                        //得到回复指令，发送新指令接收数据
+	                        if(str3.equals("FE12FD")){
+	                        	
+	                        	long time=System.currentTimeMillis();//获取系统时间的10位的时间戳
+
+	                            String  timestr=String.valueOf(time);
+	                            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss",
+	                                    Locale.getDefault());
+	                            String time1 = sdf.format(time);
+	                            String codeb="";
+	                            String code2="";
+	                            for (int i = 0; i < time1.length()/2; i++)
+								{
+									String tstr1=time1.substring(i*2, i*2+2);
+									Integer k=Integer.valueOf(tstr1);
+									codeb=Integer.toHexString(k);
+									codeb=codeb.toUpperCase();
+									if(codeb.length()==1)
+	                        			codeb='0'+codeb;
+									code2+=codeb;
+								}
+	 
+	                            
+	                            String code1="FE13";
+	                            String code3="55555555FD";
+	                            
+	                        	
+	                        	String b1=code1+code2+code3;
+							    byte[] bb1=new byte[b1.length()/2];
+
+								for (int i = 0; i < bb1.length; i++)
+								{
+									String tstr1=b1.substring(i*2, i*2+2);
+									Integer k=Integer.valueOf(tstr1, 16);
+									bb1[i]=(byte)k.byteValue();
+								}
+								
+								 // 创建Socket对象 & 指定服务端的IP 及 端口号
+	                            socket = new Socket("192.168.1.8", 1001);
+	                            
+	                            
+	                            boolean j1=socket.isConnected();
+	                            if(j1){
+	                            	Toast.makeText(getApplicationContext(), "服务器连接成功", Toast.LENGTH_LONG).show();
+	                            }
+	                            else{
+	                            	Toast.makeText(getApplicationContext(), "服务器连接失败", Toast.LENGTH_LONG).show();
+	                            }
+	                            
+	                            // 判断客户端和服务器是否连接成功
+	                            System.out.println(socket.isConnected());
+	                        	
+	                            //发送消息
+	                            // 步骤1：从Socket 获得输出流对象OutputStream
+	                            // 该对象作用：发送数据
+	                            outputStream = socket.getOutputStream();
+
+	                            // 步骤2：写入需要发送的数据到输出流对象中
+	                            outputStream.write(bb1);
+	                            // 特别注意：数据的结尾加上换行符才可让服务器端的readline()停止阻塞
+
+	                            // 步骤3：发送数据到服务端
+	                            outputStream.flush();
+	                               
+	                            //接收消息
+	                            // 步骤1：创建输入流对象InputStream
+
+
+	                            is = socket.getInputStream();
+	                        	DataInputStream input = new DataInputStream(is);    
+	                            // 步骤2：创建输入流读取器对象 并传入输入流对象
+	                            // 该对象作用：获取服务器返回的数据
+	                        	//br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+	                            
+	                            String strdata = "";
+	                            datas1 = new byte[num]; 
+	                            
+	                            wheelRunning = true;
+	                            wheelProgress = 0;
+	        					pwTwo.resetCount();
+	                            
+	                            int rolldata;
+	                            int readBytes = 0;
+	                            while (readBytes < num) {  
+	                                int read = is.read(datas1, readBytes, num - readBytes);  
+	                                System.out.println(read);  
+	                                if (read == -1) {  
+	                                    break;  
+	                                }  
+	                                readBytes += read;  
+	                                
+	                                rolldata=Math.round(((float) readBytes / num ) * 360);
+	                                pwTwo.setProgress(rolldata);
+	                                wheelProgress+=rolldata;
+	                                pwTwo.postInvalidate();
+	                                
+	                            } 
+	                         
+	                            //Handler handle =new Handler(datas1);
+	                            
+	                            new Thread(a).start();
+	                            
+	                            /*SQLiteDatabase db = sqlHelper.getWritableDatabase();
+	                            String inSql;
+	                            int mid=1;
+	                            wheelProgress=0;
+	                            for(int i=0;i<datas1.length;i+=28){
+	                            	
+	                            	String electricity = Integer.valueOf((int)datas1[i+2]*256 + (int)datas1[i+3]).toString();
+	                            	
+	                            	String voltage = Integer.valueOf((int)datas1[i+4]*256 + (int)datas1[i+5]).toString();
+	                            	
+	                            	String sensor_Num = Integer.valueOf((int)datas1[i+6]*256 + (int)datas1[i+7]).toString();
+	                            	
+	                            	String machine_id = Integer.valueOf((int)datas1[i+8]*256 + (int)datas1[i+9]).toString();
+	                            
+	                            	String welder_id = Integer.valueOf((int)datas1[i+10]*256 + (int)datas1[i+11]).toString();
+	                            	
+	                            	String code = Integer.valueOf((int)datas1[i+12]*65536 + (int)datas1[i+13]*4096 + (int)datas1[i+14]*256 + (int)datas1[i+15]).toString();
+	                            	
+	                            	String year = Integer.valueOf((int)datas1[i+16]).toString();
+	                            	
+	                            	String month = Integer.valueOf((int)datas1[i+17]).toString();
+	                            	
+	                            	String day = Integer.valueOf((int)datas1[i+18]).toString();
+	                            	
+	                            	String hour = Integer.valueOf((int)datas1[i+19]).toString();
+	                            	
+	                            	String minute = Integer.valueOf((int)datas1[i+20]).toString();
+	                            
+	                            	String second = Integer.valueOf((int)datas1[i+21]).toString();
+	                            	
+	                            	String status = Integer.valueOf((int)datas1[i+22]).toString();
+	                            	
+	                            	inSql = "insert into Tenghan(electricity,voltage,sensor_Num,machine_id,welder_id,code,year,month,day,hour,minute,second,status) "
+	                                		+ "values('"+ electricity +"','" + voltage + "','" + sensor_Num + "'"
+	                                				+ ","+ "'" + machine_id + "','" + welder_id + "','" + code + "'"
+	                                						+ ",'" + year + "','" + month + "','" + day + "','" + hour + "'"
+	                                								+ ",'" + minute + "','" + second + "','" + status + "')";
+	                                db.execSQL(inSql);
+	                                int mid1 = datas1.length/28;
+	                                rolldata=Math.round(((float) mid / mid1 ) * 360);
+	                                pwTwo.setProgress(rolldata);
+	                                wheelProgress+=rolldata;
+	                                mid++;
+	                                
+	                            }*/
+	                            
+	                        }
+	                        
+	                    } catch (IOException e) {
+	                        e.printStackTrace();
+	                    }
+					}
+		                       
+					wheelRunning = false;
+					
+					/*try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					if(u==0){
+		                Intent i2 = new Intent(Trans.this ,Ok1.class);
+		            	startActivity(i2); 
+					}*/
+			
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 				}
-			}
+			//}
 		});
     }
     
@@ -326,12 +602,10 @@ public class Trans extends Activity {
                     String str1 = str.substring(4, 12);
                     //String str1 = data.substring(4, 12);
                     
-                    Integer k=Integer.valueOf(str1, 16);
+                    Integer k=Integer.valueOf(str1, 16) * 24;
                     str1=Integer.toString(k);
                     
                     pwTwo.setText("待采集数据"+ str1 +"条");
-
-                    
                     pwTwo.postInvalidate();
                     
                     socket.close();
@@ -344,14 +618,34 @@ public class Trans extends Activity {
 	};      	
     
 
+	class Handler implements Runnable {
+
+		private byte[] datas1;
+
+		public Handler(byte[] datas1) {
+			// TODO Auto-generated constructor stub
+			this.datas1=datas1;
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	
+	
 		public Runnable a = new Runnable() {
 			public void run() {
 				int u=0;
 				int o=0;
 				wheelRunning = true;
+				wheelProgress=0;
 				while (wheelProgress < 360){
-					try {
-                    	String b="FE115555555555555555550EFD";
+					/*try {*/
+                    	/*String b="FE115555555555555555550EFD";
 					    byte[] bb=new byte[b.length()/2];
 
 						for (int i = 0; i < bb.length; i++)
@@ -421,7 +715,7 @@ public class Trans extends Activity {
                         br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                         
                         
-                        byte[] datas = new byte[len]; 
+                        byte[] datas = new byte[13]; 
                         is.read(datas);
                         String str = "";
                         for(int i=0;i<datas.length;i++){
@@ -446,6 +740,9 @@ public class Trans extends Activity {
                         String str1 = str.substring(0, 4);
                         String str2 = str.substring(24, 26);
                         String str3 = str1+str2;
+                        
+                        String strc = str.substring(4, 12);
+                        Integer num=Integer.valueOf(strc, 16) * 24 * 28 ;
                         
                         //得到回复指令，发送新指令接收数据
                         if(str3.equals("FE12FD")){
@@ -486,7 +783,6 @@ public class Trans extends Activity {
 							
 							 // 创建Socket对象 & 指定服务端的IP 及 端口号
                             socket = new Socket("192.168.1.8", 1001);
-                            socket.setSoTimeout(100); 
                             
                             
                             boolean j1=socket.isConnected();
@@ -546,13 +842,36 @@ public class Trans extends Activity {
                         	DataInputStream input = new DataInputStream(is);    
                             // 步骤2：创建输入流读取器对象 并传入输入流对象
                             // 该对象作用：获取服务器返回的数据
-                        	br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+                        	//br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                             
                             String strdata = "";
-                            int zerocount=0;
-    	                    int linecount=0;
-                            byte[] datas1 = new byte[65536]; 
-                            is.read(datas1);
+                            byte[] datas1 = new byte[num]; 
+                            
+                            int rolldata;
+                            int readBytes = 0;
+                            while (readBytes < num) {  
+                                int read = is.read(datas1, readBytes, num - readBytes);  
+                                System.out.println(read);  
+                                if (read == -1) {  
+                                    break;  
+                                }  
+                                readBytes += read;  
+                                
+                                rolldata=Math.round(((float) readBytes / num ) * 360);
+                                pwTwo.setProgress(rolldata);
+                                wheelProgress+=rolldata;
+                                
+                                try {
+									Thread.sleep(1);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+                                
+                            } 
+                         
+                            
+                            //is.read(datas1);
                             
                             for(int i=0;i<datas1.length;i++){
                             	
@@ -578,29 +897,118 @@ public class Trans extends Activity {
                             		strdata+=rr;	
                             		
                             	}
-                            	/*linecount+=2;
-    	                    	
-    	                    	//去掉后面的0
-    	                    	if(datas1[i]==0){
-    	                    		zerocount++;
-    	                    		if(zerocount>25){
-    	                    			str=str.substring(0, linecount-52);
-    	                    			break;
-    	                    		}	
-    	                    	}else{
-                        			zerocount=0;
-                        		}*/
+                            }
+                            response=strdata;
+
+                            //368788              */                            
+                            
+						
+						
+						    SQLiteDatabase db = sqlHelper.getWritableDatabase();
+                            String inSql;
+                            int mid=1;
+                            wheelProgress=0;
+                            int rolldata;
+                            for(int i=0;i<datas1.length;i+=28){
+                            	
+                            	/*byte[] eleby = new byte[2];
+                            	System.arraycopy(datas1, i+2, eleby, 0, 2);
+                            	int eleint = (int)eleby[0]*256 + (int)eleby[1];
+                            	String electricity = Integer.valueOf(eleint).toString();*/
+                            	String electricity = Integer.valueOf((int)datas1[i+2]*256 + (int)datas1[i+3]).toString();
+                            	
+                            	/*byte[] volby = new byte[2];
+                            	System.arraycopy(datas1, i+4, volby, 0, 2); 
+                            	int volint = (int)volby[0]*256 + (int)volby[1];
+                            	String voltage = Integer.valueOf(volint).toString();*/
+                            	String voltage = Integer.valueOf((int)datas1[i+4]*256 + (int)datas1[i+5]).toString();
+                            	
+                            	/*byte[] senby = new byte[2];
+                            	System.arraycopy(datas1, i+6, senby, 0, 2); 
+                            	int senint = (int)senby[0]*256 + (int)senby[1];
+                            	String sensor_Num = Integer.valueOf(senint).toString();*/
+                            	String sensor_Num = Integer.valueOf((int)datas1[i+6]*256 + (int)datas1[i+7]).toString();
+                            	
+                            	/*byte[] macby = new byte[2];
+                            	System.arraycopy(datas1, i+8, macby, 0, 2); 
+                            	int macint = (int)macby[0]*256 + (int)macby[1];
+                            	String machine_id = Integer.valueOf(macint).toString();*/
+                            	String machine_id = Integer.valueOf((int)datas1[i+8]*256 + (int)datas1[i+9]).toString();
+                            
+                            	/*byte[] welby = new byte[2];
+                            	System.arraycopy(datas1, i+10, welby, 0, 2); 
+                            	int welint = (int)welby[0]*256 + (int)welby[1];
+                            	String welder_id = Integer.valueOf(welint).toString();*/
+                            	String welder_id = Integer.valueOf((int)datas1[i+10]*256 + (int)datas1[i+11]).toString();
+                            	
+                            	/*byte[] codby = new byte[4];
+                            	System.arraycopy(datas1, i+12, codby, 0, 4); 
+                            	int codint = (int)codby[0]*65536 + (int)codby[1]*4096 + (int)codby[2]*256 + (int)codby[3];
+                            	String code = Integer.valueOf(codint).toString();*/
+                            	String code = Integer.valueOf((int)datas1[i+12]*65536 + (int)datas1[i+13]*4096 + (int)datas1[i+14]*256 + (int)datas1[i+15]).toString();
+                            	
+                            	/*byte[] yeaby = new byte[1];
+                            	System.arraycopy(datas1, i+16, yeaby, 0, 1); 
+                            	int yeaint = (int)yeaby[0];
+                            	String year = Integer.valueOf(yeaint).toString();*/
+                            	String year = Integer.valueOf((int)datas1[i+16]).toString();
+                            	
+                            	/*byte[] monby = new byte[1];
+                            	System.arraycopy(datas1, i+17, monby, 0, 1); 
+                            	int monint = (int)monby[0];
+                            	String month = Integer.valueOf(monint).toString();*/
+                            	String month = Integer.valueOf((int)datas1[i+17]).toString();
+                            	
+                            	/*byte[] dayby = new byte[1];
+                            	System.arraycopy(datas1, i+18, dayby, 0, 1); 
+                            	int dayint = (int)dayby[0];
+                            	String day = Integer.valueOf(dayint).toString();*/
+                            	String day = Integer.valueOf((int)datas1[i+18]).toString();
+                            	
+                            	/*byte[] houby = new byte[1];
+                            	System.arraycopy(datas1, i+19, houby, 0, 1); 
+                            	int houint = (int)houby[0];
+                            	String hour = Integer.valueOf(houint).toString();*/
+                            	String hour = Integer.valueOf((int)datas1[i+19]).toString();
+                            	
+                            	/*byte[] minby = new byte[1];
+                            	System.arraycopy(datas1, i+20, minby, 0, 1); 
+                            	int minint = (int)minby[0];
+                            	String minute = Integer.valueOf(minint).toString();*/
+                            	String minute = Integer.valueOf((int)datas1[i+20]).toString();
+                            
+                            	/*byte[] secby = new byte[1];
+                            	System.arraycopy(datas1, i+21, secby, 0, 1); 
+                            	int secint = (int)secby[0];
+                            	String second = Integer.valueOf(secint).toString();*/
+                            	String second = Integer.valueOf((int)datas1[i+21]).toString();
+                            	
+                            	/*byte[] staby = new byte[1];
+                            	System.arraycopy(datas1, i+22, staby, 0, 1); 
+                            	int staint = (int)staby[0];
+                            	String status = Integer.valueOf(staint).toString();*/
+                            	String status = Integer.valueOf((int)datas1[i+22]).toString();
+                            	
+                            	inSql = "insert into Tenghan(electricity,voltage,sensor_Num,machine_id,welder_id,code,year,month,day,hour,minute,second,status) "
+                                		+ "values('"+ electricity +"','" + voltage + "','" + sensor_Num + "'"
+                                				+ ","+ "'" + machine_id + "','" + welder_id + "','" + code + "'"
+                                						+ ",'" + year + "','" + month + "','" + day + "','" + hour + "'"
+                                								+ ",'" + minute + "','" + second + "','" + status + "')";
+                                db.execSQL(inSql);
+                                int mid1 = datas1.length/28;
+                                rolldata=Math.round(((float) mid / mid1 ) * 360);
+                                pwTwo.setProgress(rolldata);
+                                wheelProgress+=rolldata;
+                                mid++;
+                                
                             }
                             
-                            response=strdata;
-                            //response=data1;
-
-                            SQLiteDatabase db = sqlHelper.getWritableDatabase();
-                            String inSql;
-                            String [] stringArr = strdata.split("FD");
-                            int mid=1;
-                            int rolldata;
-                            for(int i =0;i < stringArr.length;i++)
+                            
+                            
+                            //SQLiteDatabase db = sqlHelper.getWritableDatabase();
+                            //String inSql;
+                            
+                            /*for(int i =0;i < stringArr.length;i++)
             		        {
                         	if(stringArr[i].length()>50){
                         		String electricity = Integer.valueOf(stringArr[i].subSequence(4, 8).toString(),16).toString();
@@ -709,9 +1117,7 @@ public class Trans extends Activity {
                                 wheelProgress+=rolldata;
                                 mid++;
                         	}
-            		        }
-                            	
-            		        }
+            		        }*/
                         
                         //注释测试用
                         /*String b2="FE165555555555555555550EFD";
@@ -758,9 +1164,9 @@ public class Trans extends Activity {
                         // 该对象作用：获取服务器返回的数据
                         br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                         socket.close();*/
-                    } catch (IOException e) {
+                    /*} catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                         
                         
                        /* }
