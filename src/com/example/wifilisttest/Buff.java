@@ -46,26 +46,26 @@ public class Buff extends Activity {
 	    // TODO Auto-generated method stub  
 	    if(keyCode == KeyEvent.KEYCODE_BACK)  
 	       {    
-	           exitBy2Click();      //µ÷ÓÃË«»÷ÍË³öº¯Êı  
+	           exitBy2Click();      //ï¿½ï¿½ï¿½ï¿½Ë«ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½  
 	       }  
 	    return false;  
 	}  
 	/** 
-	 * Ë«»÷ÍË³öº¯Êı 
+	 * åŒå‡»é€€å‡ºå‡½æ•° 
 	 */  
 	private static Boolean isExit = false;  
 	  
 	private void exitBy2Click() {  
 	    Timer tExit = null;  
 	    if (isExit == false) {  
-	        isExit = true; // ×¼±¸ÍË³ö    
+	        isExit = true; // ×¼ï¿½ï¿½ï¿½Ë³ï¿½    
 	        tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
 	            public void run() {  
-	                isExit = false; // È¡ÏûÍË³ö  
+	                isExit = false; // È¡ï¿½ï¿½ï¿½Ë³ï¿½  
 	            }  
-	        }, 20); // Èç¹û2ÃëÖÓÄÚÃ»ÓĞ°´ÏÂ·µ»Ø¼ü£¬ÔòÆô¶¯¶¨Ê±Æ÷È¡Ïûµô¸Õ²ÅÖ´ĞĞµÄÈÎÎñ  
+	        }, 20); // å¦‚æœ2ç§’é’Ÿå†…æ²¡æœ‰æŒ‰ä¸‹è¿”å›é”®ï¼Œåˆ™å¯åŠ¨å®šæ—¶å™¨å–æ¶ˆæ‰åˆšæ‰æ‰§è¡Œçš„ä»»åŠ¡ 
 	  
 	    } else {  
 	        finish();  

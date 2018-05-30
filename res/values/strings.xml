@@ -3,7 +3,7 @@
 
     <string name="app_name">CRA-W</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">IP地址配置</string>
     <string name="LeftButton">show ListFragment</string>
     <string name="title_trans">Collection</string>
     <string name="title_activity_loading">Welder List</string>

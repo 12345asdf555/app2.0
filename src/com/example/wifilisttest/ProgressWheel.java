@@ -295,7 +295,7 @@ public class ProgressWheel extends View {
 			spinHandler.sendEmptyMessage(0);
 		}
 		else{
-			setText("完成");
+			setText("閲囬泦瀹屾垚");
 			spinHandler.sendEmptyMessage(0);
 		}
 	}
@@ -303,16 +303,30 @@ public class ProgressWheel extends View {
 	/**
 	 * Set the progress to a specific value
 	 */
-	public void setProgress(int i) {
+	public void setProgress1(int i) {
 		isSpinning = false;
 		progress = i;
 		if(Math.round(((float) progress / 360 ) * 100) < 100){
-			setText(Math.round(((float) progress / 360 ) * 100) + "%");
+			setText("閲囬泦:" + Math.round(((float) progress / 360 ) * 100) + "%");
 			//setText(Math.round(((float) progress / 360) * 100) + "%");
 			spinHandler.sendEmptyMessage(0);
 		}
 		else{
-			setText("完成");
+			setText("瀹屾垚");
+			spinHandler.sendEmptyMessage(0);
+		}
+	}
+	
+	public void setProgress2(int i) {
+		isSpinning = false;
+		progress = i;
+		if(Math.round(((float) progress / 360 ) * 100) < 100){
+			setText("澶勭悊:" + Math.round(((float) progress / 360 ) * 100) + "%");
+			//setText(Math.round(((float) progress / 360) * 100) + "%");
+			spinHandler.sendEmptyMessage(0);
+		}
+		else{
+			setText("瀹屾垚");
 			spinHandler.sendEmptyMessage(0);
 		}
 	}

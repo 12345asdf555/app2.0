@@ -30,7 +30,6 @@ public class MainActivity extends FragmentActivity {
         FragmentManager manager  = getSupportFragmentManager();  
         manager.beginTransaction().add(R.id.fragments, f1).commit(); 
         
-        //Êý¾Ý¿â
         sqlHelper = new MySQLiteOpenHelper(this, "StuDatabase.db", null, 2);
         sqlHelper.getWritableDatabase();
         

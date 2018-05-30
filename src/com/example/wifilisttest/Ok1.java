@@ -33,26 +33,26 @@ public class Ok1 extends Activity {
 	    // TODO Auto-generated method stub  
 	    if(keyCode == KeyEvent.KEYCODE_BACK)  
 	       {    
-	           exitBy2Click();      //调用双击退出函数  
+	           exitBy2Click();      
 	       }  
 	    return false;  
 	}  
 	/** 
-	 * 双击退出函数 
+	 * 双锟斤拷锟剿筹拷锟斤拷锟斤拷 
 	 */  
 	private static Boolean isExit = false;  
 	  
 	private void exitBy2Click() {  
 	    Timer tExit = null;  
 	    if (isExit == false) {  
-	        isExit = true; // 准备退出    
+	        isExit = true; 
 	        tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
 	            public void run() {  
-	                isExit = false; // 取消退出  
+	                isExit = false;  
 	            }  
-	        }, 20); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务  
+	        }, 20);   
 	  
 	    } else {  
 	        finish();  

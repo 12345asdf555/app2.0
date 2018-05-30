@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import io.netty.channel.socket.SocketChannel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +29,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-import java.nio.channels.SocketChannel;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,7 +49,7 @@ import com.example.wifilisttest.ProgressWheel;
 
 public class Trans2 extends Activity {
 
-	private SocketChannel socketChannel = null;
+	public SocketChannel socketChannel = null;
 	private ProgressWheel pwTwo;
 	boolean wheelRunning;
 	int wheelProgress = 0, pieProgress = 0;
@@ -57,65 +57,67 @@ public class Trans2 extends Activity {
 	
 	
 	/**
-     * Ö÷ ±äÁ¿
+     * ä¸» å˜é‡
      */
 
-    // Ö÷Ïß³ÌHandler
-    // ÓÃÓÚ½«´Ó·şÎñÆ÷»ñÈ¡µÄÏûÏ¢ÏÔÊ¾³öÀ´
+	// ä¸»çº¿ç¨‹Handler
+    // ç”¨äºå°†ä»æœåŠ¡å™¨è·å–çš„æ¶ˆæ¯æ˜¾ç¤ºå‡ºæ¥
     private Handler mMainHandler;
 
-    // Socket±äÁ¿
+    // Socketå˜é‡
     private Socket socket;
 
-    // Ïß³Ì³Ø
-    // ÎªÁË·½±ãÕ¹Ê¾,´Ë´¦Ö±½Ó²ÉÓÃÏß³Ì³Ø½øĞĞÏß³Ì¹ÜÀí,¶øÃ»ÓĞÒ»¸ö¸ö¿ªÏß³Ì
+    // çº¿ç¨‹æ± 
+    // ä¸ºäº†æ–¹ä¾¿å±•ç¤º,æ­¤å¤„ç›´æ¥é‡‡ç”¨çº¿ç¨‹æ± è¿›è¡Œçº¿ç¨‹ç®¡ç†,è€Œæ²¡æœ‰ä¸€ä¸ªä¸ªå¼€çº¿ç¨‹
     private ExecutorService mThreadPool;
     
 
     /**
-     * ½ÓÊÕ·şÎñÆ÷ÏûÏ¢ ±äÁ¿
+     * æ¥æ”¶æœåŠ¡å™¨æ¶ˆæ¯ å˜é‡
      */
-    // ÊäÈëÁ÷¶ÔÏó
+    // è¾“å…¥æµå¯¹è±¡
     InputStream is;
 
-    // ÊäÈëÁ÷¶ÁÈ¡Æ÷¶ÔÏó
+    // è¾“å…¥æµè¯»å–å™¨å¯¹è±¡
     InputStreamReader isr ;
     BufferedReader br ;
 
-    // ½ÓÊÕ·şÎñÆ÷·¢ËÍ¹ıÀ´µÄÏûÏ¢
+    // æ¥æ”¶æœåŠ¡å™¨å‘é€è¿‡æ¥çš„æ¶ˆæ¯
     String response;
 
 
     /**
-     * ·¢ËÍÏûÏ¢µ½·şÎñÆ÷ ±äÁ¿
+     * å‘é€æ¶ˆæ¯åˆ°æœåŠ¡å™¨ å˜é‡
      */
-    // Êä³öÁ÷¶ÔÏó
+    // è¾“å‡ºæµå¯¹è±¡
     OutputStream outputStream;
 
     /**
-     * °´Å¥ ±äÁ¿
+     * æŒ‰é’® å˜é‡
      */
 
     
     protected SQLiteDatabase db;
     
     private MySQLiteOpenHelper sqlHelper;
-    
+    public Button startBtn1;
     boolean flag = false;
 	int i=0;
 	int count=0;
+	public Client client;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trans2);
         sqlHelper = new MySQLiteOpenHelper(this, "StuDatabase.db", null, 2);
         pwTwo = (ProgressWheel) findViewById(R.id.progress_bar_two2);
-        Button startBtn1 = (Button) findViewById(R.id.btn_start2);
+        startBtn1 = (Button) findViewById(R.id.btn_start2);
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-       
+		Intent intent = getIntent();
+		String ip = intent.getStringExtra("ip");
+		
         SQLiteDatabase db = sqlHelper.getWritableDatabase();
-        
         
         String sql = "select count(*) from Tenghan";  
         Cursor cursor = db.rawQuery(sql, null);  
@@ -134,23 +136,25 @@ public class Trans2 extends Activity {
         		}while(c.moveToNext());
         }
         	String cou=Integer.toString(count);*/
-        	pwTwo.setText("´ıÉÏ´«Êı¾İ"+count+"Ìõ");
-        	if(count!=0){
-        		startBtn1.setEnabled(true);
+        	pwTwo.setText("å¾…ä¸Šä¼ æ•°æ®"+count+"æ¡");
+        	client = new Client(this,ip,count);
+        	if(socketChannel == null){
+        		new Thread(cli).start();
         	}
+        	
+        	/*if(count!=0){
+        		startBtn1.setEnabled(true);
+        	}*/
         	/*pwTwo.postInvalidate();*/
 
         
         
 /*
-        *//**
-         * ´´½¨¿Í»§¶Ë & ·şÎñÆ÷µÄÁ¬½Ó
-         *//*
+        
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                // ÀûÓÃÏß³Ì³ØÖ±½Ó¿ªÆôÒ»¸öÏß³Ì & Ö´ĞĞ¸ÃÏß³Ì
                 mThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {*/
@@ -167,31 +171,39 @@ public class Trans2 extends Activity {
 		});
     }
     
+    public Runnable cli = new Runnable(){
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			client.run();
+		}
+		
+	};
+    
     @Override  
 	public boolean onKeyDown(int keyCode, KeyEvent event) {  
 	    // TODO Auto-generated method stub  
 	    if(keyCode == KeyEvent.KEYCODE_BACK)  
 	       {    
-	           exitBy2Click();      //µ÷ÓÃË«»÷ÍË³öº¯Êı  
+	           exitBy2Click();      
 	       }  
 	    return false;  
 	}  
-	/** 
-	 * Ë«»÷ÍË³öº¯Êı 
-	 */  
+    
 	private static Boolean isExit = false;  
 	  
 	private void exitBy2Click() {  
 	    Timer tExit = null;  
 	    if (isExit == false) {  
-	        isExit = true; // ×¼±¸ÍË³ö    
+	        isExit = true; // ×¼ï¿½ï¿½ï¿½Ë³ï¿½    
 	        tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
 	            public void run() {  
-	                isExit = false; // È¡ÏûÍË³ö  
+	                isExit = false; // È¡ï¿½ï¿½ï¿½Ë³ï¿½  
 	            }  
-	        }, 20); // Èç¹û2ÃëÖÓÄÚÃ»ÓĞ°´ÏÂ·µ»Ø¼ü£¬ÔòÆô¶¯¶¨Ê±Æ÷È¡Ïûµô¸Õ²ÅÖ´ĞĞµÄÈÎÎñ  
+	        }, 20);   
 	  
 	    } else {  
 	        finish();  
@@ -229,64 +241,64 @@ public class Trans2 extends Activity {
 					}
                 	
                 	
-                    // ´´½¨Socket¶ÔÏó & Ö¸¶¨·şÎñ¶ËµÄIP ¼° ¶Ë¿ÚºÅ
+                    // ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½ï¿½ & Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½IP ï¿½ï¿½ ï¿½Ë¿Úºï¿½
                     socket = new Socket("192.168.1.8", 1001);
                     
                     
                     
                     boolean j=socket.isConnected();
                     if(j){
-                    	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½Ó³É¹¦", Toast.LENGTH_LONG).show();
+                    	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½", Toast.LENGTH_LONG).show();
                     }
                     else{
-                    	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½ÓÊ§°Ü", Toast.LENGTH_LONG).show();
+                    	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½", Toast.LENGTH_LONG).show();
                     }
                     
-                    // ÅĞ¶Ï¿Í»§¶ËºÍ·şÎñÆ÷ÊÇ·ñÁ¬½Ó³É¹¦
+                    // ï¿½Ğ¶Ï¿Í»ï¿½ï¿½ËºÍ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½
                     System.out.println(socket.isConnected());
                     
-                  //·¢ËÍÏûÏ¢
-                    // ²½Öè1£º´ÓSocket »ñµÃÊä³öÁ÷¶ÔÏóOutputStream
-                    // ¸Ã¶ÔÏó×÷ÓÃ£º·¢ËÍÊı¾İ
+                  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                    // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Socket ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OutputStream
+                    // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     outputStream = socket.getOutputStream();
 
-                    // ²½Öè2£ºĞ´ÈëĞèÒª·¢ËÍµÄÊı¾İµ½Êä³öÁ÷¶ÔÏóÖĞ
+                    // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     outputStream.write(bb);
-                    // ÌØ±ğ×¢Òâ£ºÊı¾İµÄ½áÎ²¼ÓÉÏ»»ĞĞ·û²Å¿ÉÈÃ·şÎñÆ÷¶ËµÄreadline()Í£Ö¹×èÈû
+                    // ï¿½Ø±ï¿½×¢ï¿½â£ºï¿½ï¿½ï¿½İµÄ½ï¿½Î²ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ğ·ï¿½ï¿½Å¿ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½readline()Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 
-                    // ²½Öè3£º·¢ËÍÊı¾İµ½·şÎñ¶Ë
+                    // ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     outputStream.flush();
                        
-                    //½ÓÊÕÏûÏ¢
-                    // ²½Öè1£º´´½¨ÊäÈëÁ÷¶ÔÏóInputStream
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                    // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½InputStream
                     is = socket.getInputStream();
-                    // ²½Öè2£º´´½¨ÊäÈëÁ÷¶ÁÈ¡Æ÷¶ÔÏó ²¢´«ÈëÊäÈëÁ÷¶ÔÏó
-                    // ¸Ã¶ÔÏó×÷ÓÃ£º»ñÈ¡·şÎñÆ÷·µ»ØµÄÊı¾İ
+                    // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                     br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 
                     
-                    //µÃµ½³¤¶È
+                    //ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½
                     String data = br.readLine();
                     int len = data.length();
                     
                     
-                    //·¢ËÍÏûÏ¢
-                    // ²½Öè1£º´ÓSocket »ñµÃÊä³öÁ÷¶ÔÏóOutputStream
-                    // ¸Ã¶ÔÏó×÷ÓÃ£º·¢ËÍÊı¾İ
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                    // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Socket ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OutputStream
+                    // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     outputStream = socket.getOutputStream();
 
-                    // ²½Öè2£ºĞ´ÈëĞèÒª·¢ËÍµÄÊı¾İµ½Êä³öÁ÷¶ÔÏóÖĞ
+                    // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     outputStream.write(bb);
-                    // ÌØ±ğ×¢Òâ£ºÊı¾İµÄ½áÎ²¼ÓÉÏ»»ĞĞ·û²Å¿ÉÈÃ·şÎñÆ÷¶ËµÄreadline()Í£Ö¹×èÈû
+                    // ï¿½Ø±ï¿½×¢ï¿½â£ºï¿½ï¿½ï¿½İµÄ½ï¿½Î²ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ğ·ï¿½ï¿½Å¿ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½readline()Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 
-                    // ²½Öè3£º·¢ËÍÊı¾İµ½·şÎñ¶Ë
+                    // ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     outputStream.flush();
                        
-                    //½ÓÊÕÏûÏ¢
-                    // ²½Öè1£º´´½¨ÊäÈëÁ÷¶ÔÏóInputStream
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                    // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½InputStream
                     is = socket.getInputStream();
-                    // ²½Öè2£º´´½¨ÊäÈëÁ÷¶ÁÈ¡Æ÷¶ÔÏó ²¢´«ÈëÊäÈëÁ÷¶ÔÏó
-                    // ¸Ã¶ÔÏó×÷ÓÃ£º»ñÈ¡·şÎñÆ÷·µ»ØµÄÊı¾İ
+                    // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                     br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                     
                     
@@ -319,7 +331,7 @@ public class Trans2 extends Activity {
                     if(str3.equals("FE23FD")){*/
                     	
                     	
-                    	/* // ´´½¨Socket¶ÔÏó & Ö¸¶¨·şÎñ¶ËµÄIP ¼° ¶Ë¿ÚºÅ
+                    	/* // ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½ï¿½ & Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½IP ï¿½ï¿½ ï¿½Ë¿Úºï¿½
                         try {
 							socket = new Socket("10.1.12.168", 5555);
 						} catch (IOException e1) {
@@ -329,13 +341,13 @@ public class Trans2 extends Activity {
                         
                         boolean j=socket.isConnected();
                         if(j){
-                        	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½Ó³É¹¦", Toast.LENGTH_LONG).show();
+                        	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½", Toast.LENGTH_LONG).show();
                         }
                         else{
-                        	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½ÓÊ§°Ü", Toast.LENGTH_LONG).show();
+                        	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½", Toast.LENGTH_LONG).show();
                         }
                         
-                        // ÅĞ¶Ï¿Í»§¶ËºÍ·şÎñÆ÷ÊÇ·ñÁ¬½Ó³É¹¦
+                        // ï¿½Ğ¶Ï¿Í»ï¿½ï¿½ËºÍ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½
                         System.out.println(socket.isConnected());*/
                     	
             	
@@ -349,91 +361,91 @@ public class Trans2 extends Activity {
                     Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
 		           	if (c.moveToFirst()) {
 		                 do {
- 			                    String electricity = c.getString(c.getColumnIndex("electricity"));
+ 			                    String electricity = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("electricity")))));
  			                    if(electricity.length()!=4){
  			                    	int a=4-electricity.length();
  			                    	for(int ii=0;ii<a;ii++){
  			                    		electricity=i+electricity;
  			                    	}
  			                    }
- 			                   String voltage = c.getString(c.getColumnIndex("voltage"));
+ 			                   String voltage = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("voltage")))));
  			                   if(voltage.length()!=4){
 			                    	int a=4-voltage.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		voltage=i+voltage;
 			                    	}
 			                    }
- 			                   String sensor_Num = c.getString(c.getColumnIndex("sensor_Num"));
+ 			                   String sensor_Num = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("sensor_Num")))));
  			                   if(sensor_Num.length()!=4){
    			                    	int a=4-sensor_Num.length();
    			                    	for(int ii=0;ii<a;ii++){
    			                    		sensor_Num=i+sensor_Num;
    			                    	}
    			                    }
- 			                   String machine_id = c.getString(c.getColumnIndex("machine_id"));
+ 			                   String machine_id = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("machine_id")))));
  			                   if(machine_id.length()!=4){
 			                    	int a=4-machine_id.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		machine_id=i+machine_id;
 			                    	}
 			                    }
- 			                   String welder_id = c.getString(c.getColumnIndex("welder_id"));
+ 			                   String welder_id = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("welder_id")))));
  			                   if(welder_id.length()!=4){
 			                    	int a=4-welder_id.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		welder_id=i+welder_id;
 			                    	}
 			                    }
- 			                   String code = c.getString(c.getColumnIndex("code"));
+ 			                   String code = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("code")))));
  			                   if(code.length()!=8){
 			                    	int a=8-code.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		code=i+code;
 			                    	}
 			                    }
- 			                   String year = c.getString(c.getColumnIndex("year"));
+ 			                   String year = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("year")))));
  			                   if(year.length()!=2){
 			                    	int a=2-year.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		year=i+year;
 			                    	}
 			                    }
- 			                   String month = c.getString(c.getColumnIndex("month"));
+ 			                   String month = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("month")))));
  			                   if(month.length()!=2){
 			                    	int a=2-month.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		month=i+month;
 			                    	}
 			                    }
- 			                   String day = c.getString(c.getColumnIndex("day"));
+ 			                   String day = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("day")))));
  			                   if(day.length()!=2){
 			                    	int a=2-day.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		day=i+day;
 			                    	}
 			                    }
- 			                   String hour = c.getString(c.getColumnIndex("hour"));
+ 			                   String hour = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("hour")))));
  			                   if(hour.length()!=2){
 			                    	int a=2-hour.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		hour=i+hour;
 			                    	}
 			                    }
- 			                   String minute = c.getString(c.getColumnIndex("minute"));
+ 			                   String minute = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("minute")))));
  			                   if(minute.length()!=2){
 			                    	int a=2-minute.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		minute=i+minute;
 			                    	}
 			                    }
- 			                   String second = c.getString(c.getColumnIndex("second"));
+ 			                   String second = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("second")))));
  			                   if(second.length()!=2){
 			                    	int a=2-second.length();
 			                    	for(int ii=0;ii<a;ii++){
 			                    		second=i+second;
 			                    	}
 			                    }
- 			                   String status = c.getString(c.getColumnIndex("status"));
+ 			                   String status = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("status")))));
  			                   if(status.length()!=2){
 			                    	int a=2-status.length();
 			                    	for(int ii=0;ii<a;ii++){
@@ -442,50 +454,40 @@ public class Trans2 extends Activity {
 			                    }
 		                  
 		
-		                        l = l + o + electricity + voltage + sensor_Num 
-		                        		+ machine_id + welder_id + code + year 
-		                        		+ month + day + hour + minute + second + status + p;
+		                        l = o + electricity + voltage + sensor_Num 
+		                        	  + machine_id + welder_id + code + year 
+		                        	  + month + day + hour + minute + second + status + p;
+		                        
+		                        l = l.toUpperCase();
 		                        
 		                        /*String sql = "update Tenghan set status = 01";   
-		                        //Ö´ĞĞSQL   
 		                        db.execSQL(sql);*/
+		                        
+		                        if(socketChannel!=null){
+		        			        try {
+		        			        	socketChannel.writeAndFlush(l).sync();
+		        					} catch (InterruptedException e) {
+		        						socketChannel = null;
+		        						e.printStackTrace();
+		        					}
+		        		        }
 
 		                        b++;
 			                    int d=Math.round(((float) b / c.getCount() ) * 360);
-                                pwTwo.setProgress(d);
+                                pwTwo.setProgress2(d);
                                 wheelProgress=d;   
                                 
-                                Thread.sleep(20);
+                                l="";
                                 
 		                        //pwTwo.incrementProgress();
 		            			//wheelProgress++;
-		                        
-                            
-                            System.out.println(l);   
+                                //System.out.println(l); 
+                                
                         } while (c.moveToNext());
                     }
                     c.close();
                     
-                    
-                    try {    
- 		            	if(socketChannel==null){
- 		            		socketChannel = SocketChannel.open(); 
-     		                SocketAddress socketAddress = new InetSocketAddress("192.168.21.100", 5555);    
-     		                socketChannel.connect(socketAddress);
- 		            	}
- 		            	
- 		                SendAndReceiveUtil.sendData(socketChannel, l); 
- 		                    
- 		                /*String msg = SendAndReceiveUtil.receiveData(socketChannel);    
- 		                if(msg != null) 
- 		                	System.out.println(msg);*/
-
- 		            
- 		            } catch (Exception ex) {    
- 		                ex.printStackTrace();  
- 		            }
-                    
-                    
+                    db.execSQL("delete from Tenghan");
                     
                     /*byte[] bb3=new byte[l.length()/2];
 					for (int i1 = 0; i1 < bb3.length; i1++)
@@ -496,16 +498,16 @@ public class Trans2 extends Activity {
 					}
                     
                     try {
-                    	//·¢ËÍÏûÏ¢
-                        // ²½Öè1£º´ÓSocket »ñµÃÊä³öÁ÷¶ÔÏóOutputStream
-                        // ¸Ã¶ÔÏó×÷ÓÃ£º·¢ËÍÊı¾İ
+                    	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                        // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Socket ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OutputStream
+                        // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream = socket.getOutputStream();
 
-                        // ²½Öè2£ºĞ´ÈëĞèÒª·¢ËÍµÄÊı¾İµ½Êä³öÁ÷¶ÔÏóÖĞ
+                        // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream.write(bb3);
-                        // ÌØ±ğ×¢Òâ£ºÊı¾İµÄ½áÎ²¼ÓÉÏ»»ĞĞ·û²Å¿ÉÈÃ·şÎñÆ÷¶ËµÄreadline()Í£Ö¹×èÈû
+                        // ï¿½Ø±ï¿½×¢ï¿½â£ºï¿½ï¿½ï¿½İµÄ½ï¿½Î²ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ğ·ï¿½ï¿½Å¿ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½readline()Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 
-                        // ²½Öè3£º·¢ËÍÊı¾İµ½·şÎñ¶Ë
+                        // ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream.flush();
                         
                         response = l;
@@ -524,7 +526,6 @@ public class Trans2 extends Activity {
     					p2.printStackTrace();
     				}
     				
-    				Toast.makeText(getApplicationContext(), "ÉÏ´«³É¹¦", Toast.LENGTH_LONG).show();
     	            Intent i2 = new Intent(Trans2.this ,Ok2.class);
     	            startActivity(i2); 
                     
@@ -541,64 +542,64 @@ public class Trans2 extends Activity {
 						}
                     	
                     	
-                        // ´´½¨Socket¶ÔÏó & Ö¸¶¨·şÎñ¶ËµÄIP ¼° ¶Ë¿ÚºÅ
+                        // ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½ï¿½ & Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½IP ï¿½ï¿½ ï¿½Ë¿Úºï¿½
                         socket = new Socket("192.168.1.8", 1001);
                         
                         
                         
                         boolean j33=socket.isConnected();
                         if(j33){
-                        	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½Ó³É¹¦", Toast.LENGTH_LONG).show();
+                        	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½", Toast.LENGTH_LONG).show();
                         }
                         else{
-                        	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½ÓÊ§°Ü", Toast.LENGTH_LONG).show();
+                        	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½", Toast.LENGTH_LONG).show();
                         }
                         
-                        // ÅĞ¶Ï¿Í»§¶ËºÍ·şÎñÆ÷ÊÇ·ñÁ¬½Ó³É¹¦
+                        // ï¿½Ğ¶Ï¿Í»ï¿½ï¿½ËºÍ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½
                         System.out.println(socket.isConnected());
                         
-                      //·¢ËÍÏûÏ¢
-                        // ²½Öè1£º´ÓSocket »ñµÃÊä³öÁ÷¶ÔÏóOutputStream
-                        // ¸Ã¶ÔÏó×÷ÓÃ£º·¢ËÍÊı¾İ
+                      //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                        // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Socket ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OutputStream
+                        // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream = socket.getOutputStream();
 
-                        // ²½Öè2£ºĞ´ÈëĞèÒª·¢ËÍµÄÊı¾İµ½Êä³öÁ÷¶ÔÏóÖĞ
+                        // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream.write(bbb1);
-                        // ÌØ±ğ×¢Òâ£ºÊı¾İµÄ½áÎ²¼ÓÉÏ»»ĞĞ·û²Å¿ÉÈÃ·şÎñÆ÷¶ËµÄreadline()Í£Ö¹×èÈû
+                        // ï¿½Ø±ï¿½×¢ï¿½â£ºï¿½ï¿½ï¿½İµÄ½ï¿½Î²ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ğ·ï¿½ï¿½Å¿ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½readline()Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 
-                        // ²½Öè3£º·¢ËÍÊı¾İµ½·şÎñ¶Ë
+                        // ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream.flush();
                            
-                        //½ÓÊÕÏûÏ¢
-                        // ²½Öè1£º´´½¨ÊäÈëÁ÷¶ÔÏóInputStream
+                        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                        // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½InputStream
                         is = socket.getInputStream();
-                        // ²½Öè2£º´´½¨ÊäÈëÁ÷¶ÁÈ¡Æ÷¶ÔÏó ²¢´«ÈëÊäÈëÁ÷¶ÔÏó
-                        // ¸Ã¶ÔÏó×÷ÓÃ£º»ñÈ¡·şÎñÆ÷·µ»ØµÄÊı¾İ
+                        // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                         br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 
                         
-                        //µÃµ½³¤¶È
+                        //ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½
                         String datab1 = br.readLine();
                         int lenb1 = datab1.length();
                         
                         
-                        //·¢ËÍÏûÏ¢
-                        // ²½Öè1£º´ÓSocket »ñµÃÊä³öÁ÷¶ÔÏóOutputStream
-                        // ¸Ã¶ÔÏó×÷ÓÃ£º·¢ËÍÊı¾İ
+                        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                        // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Socket ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OutputStream
+                        // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream = socket.getOutputStream();
 
-                        // ²½Öè2£ºĞ´ÈëĞèÒª·¢ËÍµÄÊı¾İµ½Êä³öÁ÷¶ÔÏóÖĞ
+                        // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream.write(bbb1);
-                        // ÌØ±ğ×¢Òâ£ºÊı¾İµÄ½áÎ²¼ÓÉÏ»»ĞĞ·û²Å¿ÉÈÃ·şÎñÆ÷¶ËµÄreadline()Í£Ö¹×èÈû
+                        // ï¿½Ø±ï¿½×¢ï¿½â£ºï¿½ï¿½ï¿½İµÄ½ï¿½Î²ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ğ·ï¿½ï¿½Å¿ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½readline()Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 
-                        // ²½Öè3£º·¢ËÍÊı¾İµ½·şÎñ¶Ë
+                        // ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         outputStream.flush();
                            
-                        //½ÓÊÕÏûÏ¢
-                        // ²½Öè1£º´´½¨ÊäÈëÁ÷¶ÔÏóInputStream
+                        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+                        // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½InputStream
                         is = socket.getInputStream();
-                        // ²½Öè2£º´´½¨ÊäÈëÁ÷¶ÁÈ¡Æ÷¶ÔÏó ²¢´«ÈëÊäÈëÁ÷¶ÔÏó
-                        // ¸Ã¶ÔÏó×÷ÓÃ£º»ñÈ¡·şÎñÆ÷·µ»ØµÄÊı¾İ
+                        // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
                         br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                         
                         
@@ -640,7 +641,7 @@ public class Trans2 extends Activity {
 					
 					
             	
-                /*// ´´½¨Socket¶ÔÏó & Ö¸¶¨·şÎñ¶ËµÄIP ¼° ¶Ë¿ÚºÅ
+                /*// ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½ï¿½ & Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½IP ï¿½ï¿½ ï¿½Ë¿Úºï¿½
                 try {
                 	WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
                	 	WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -654,7 +655,7 @@ public class Trans2 extends Activity {
                 
 			        w=socket.isConnected();
 			        if(w){
-			           Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½Ó³É¹¦", Toast.LENGTH_LONG).show();
+			           Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³É¹ï¿½", Toast.LENGTH_LONG).show();
 			                	
 			           System.out.println(socket.isConnected());
 			                    
@@ -720,21 +721,21 @@ public class Trans2 extends Activity {
 			                    c.close();
 			                    
 			                    try {
-			                    	//·¢ËÍÏûÏ¢
-			                        // ²½Öè1£º´ÓSocket »ñµÃÊä³öÁ÷¶ÔÏóOutputStream
-			                        // ¸Ã¶ÔÏó×÷ÓÃ£º·¢ËÍÊı¾İ
+			                    	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+			                        // ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½Socket ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OutputStream
+			                        // ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			                        outputStream = socket.getOutputStream();
 			
-			                        // ²½Öè2£ºĞ´ÈëĞèÒª·¢ËÍµÄÊı¾İµ½Êä³öÁ÷¶ÔÏóÖĞ
+			                        // ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			                        outputStream.write((l+"\n").getBytes("utf-8"));
-			                        // ÌØ±ğ×¢Òâ£ºÊı¾İµÄ½áÎ²¼ÓÉÏ»»ĞĞ·û²Å¿ÉÈÃ·şÎñÆ÷¶ËµÄreadline()Í£Ö¹×èÈû
+			                        // ï¿½Ø±ï¿½×¢ï¿½â£ºï¿½ï¿½ï¿½İµÄ½ï¿½Î²ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ğ·ï¿½ï¿½Å¿ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½readline()Í£Ö¹ï¿½ï¿½ï¿½ï¿½
 			
-			                        // ²½Öè3£º·¢ËÍÊı¾İµ½·şÎñ¶Ë
+			                        // ï¿½ï¿½ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			                        outputStream.flush();
 			                        
 			                        response = l;
 			
-			                        // ²½Öè4:Í¨ÖªÖ÷Ïß³Ì,½«½ÓÊÕµÄÏûÏ¢ÏÔÊ¾µ½½çÃæ
+			                        // ï¿½ï¿½ï¿½ï¿½4:Í¨Öªï¿½ï¿½ï¿½ß³ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			                        Message msg = Message.obtain();
 			                        msg.what = 0;
 			     		           
@@ -744,13 +745,13 @@ public class Trans2 extends Activity {
 			                	
 			                }
 			                else{
-			                	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½ÓÊ§°Ü", Toast.LENGTH_LONG).show();
+			                	Toast.makeText(getApplicationContext(), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½", Toast.LENGTH_LONG).show();
 			                }*/
 			             }
 	                }
 		        catch(Exception e){
                 	if(u==0){
-	                	Toast.makeText(getApplicationContext(), "·şÎñÆ÷Á¬½ÓÊ§°Ü", Toast.LENGTH_LONG).show();
+	                	
 	                	Intent i2 = new Intent(Trans2.this ,Buff.class);
 	                	startActivity(i2); 
                 	}

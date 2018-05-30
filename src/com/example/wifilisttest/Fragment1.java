@@ -65,7 +65,7 @@ public class Fragment1 extends ListFragment   {
 	        wifiConfigList = wifiManager.getConfiguredNetworks();
 	        wifiinfo = wifiManager.getConnectionInfo(); 
 	        
-	        //Êı×é³õÊ¼»¯Òª×¢Òâ
+	        //æ•°ç»„åˆå§‹åŒ–è¦æ³¨æ„
 	        String[] listk=new String[wifilist.size()];
 	        
 	        if(wifilist!=null){  
@@ -101,18 +101,18 @@ public class Fragment1 extends ListFragment   {
         }
     
 	        
-        //ÉèÖÃFragment1¶ÔÓ¦R.layout.listtestÕâ¸ö²¼¾ÖÎÄ¼ş
+	      //è®¾ç½®Fragment1å¯¹åº”R.layout.listtestè¿™ä¸ªå¸ƒå±€æ–‡ä»¶
        adapter = new SimpleAdapter(getActivity(),getData(list0), R.layout.listtest, new String[]{"title"}, new int[]{R.id.title});  
        setListAdapter(adapter); 
     }
 	
-	//Çå³ıÍ¬ÃûWIFI
+	//æ¸…é™¤åŒåWIFI
 	 public  List<String> removeDup(String[] array) {  
 	        List<String> list = new ArrayList<String>();  
 	        list.add(array[0]);  
 	        int notEqual = -1;  
-	        for (int i = 0; i < array.length; i++) {// Ñ­»·È¡StringÊı×é  
-	            for (int j = 0; j < list.size(); j++) {// Ñ­»·È¡LIST  
+	        for (int i = 0; i < array.length; i++) {// Ñ­ï¿½ï¿½È¡Stringï¿½ï¿½ï¿½ï¿½  
+	            for (int j = 0; j < list.size(); j++) {// Ñ­ï¿½ï¿½È¡LIST  
 	                if (array[i].equals("")||array[i].equals(null)) {  
 	                    continue;  
 	                } else if (array[i].equals(list.get(j))) {  
@@ -145,8 +145,8 @@ public class Fragment1 extends ListFragment   {
     
     
 	/** 
-     * @ÃèÊö ÔÚonCreateViewÖĞ¼ÓÔØ²¼¾Ö 
-     * */  
+     * @æè¿° åœ¨onCreateViewä¸­åŠ è½½å¸ƒå±€ 
+     * */    
     @Override  
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  
             Bundle savedInstanceState) {  
@@ -155,7 +155,7 @@ public class Fragment1 extends ListFragment   {
 
         
         Tv=(TextView)view.findViewById(R.id.tv);
-        Tv.setText("º¸»úÁĞ±í");
+        Tv.setText("ç„Šæœºåˆ—è¡¨");
         Tv.setTextColor(android.graphics.Color.WHITE);
         
         Log.i(TAG, "--------onCreateView");  
@@ -188,7 +188,7 @@ public class Fragment1 extends ListFragment   {
         	int NetID=0;
         	for (int j = 0; j < wifiConfigList.size(); j++) {
             if (wifiConfigList.get(j).SSID.equals("\"" + scanResult.SSID + "\"")) {
-                //Èç¹ûÒªÁ¬½ÓµÄwifiÔÚÒÑ¾­ÅäÖÃºÃµÄÁĞ±íÖĞ£¬ÄÇ¾ÍÉèÖÃÔÊĞíÁ´½Ó£¬²¢ÇÒµÃµ½id
+            	//å¦‚æœè¦è¿æ¥çš„wifiåœ¨å·²ç»é…ç½®å¥½çš„åˆ—è¡¨ä¸­ï¼Œé‚£å°±è®¾ç½®å…è®¸é“¾æ¥ï¼Œå¹¶ä¸”å¾—åˆ°id
             	NetID=wifiConfigList.get(j).networkId;
             	//wifiManager.removeNetwork(wifiConfigList.get(j).networkId);
             	wifiManager.saveConfiguration();
@@ -200,7 +200,7 @@ public class Fragment1 extends ListFragment   {
         	wifiCon.allowedKeyManagement.clear();  
         	wifiCon.allowedPairwiseCiphers.clear();  
         	wifiCon.allowedProtocols.clear(); 
-    		wifiCon.SSID = "\""+scanResult.SSID+"\"";//\"×ªÒå×Ö·û£¬´ú±í"
+    		wifiCon.SSID = "\""+scanResult.SSID+"\"";//\"è½¬ä¹‰å­—ç¬¦ï¼Œä»£è¡¨"
     		/*wifiCon.wepKeys[0] = ""; 
     		wifiCon.hiddenSSID = true; 
     		wifiCon.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED); 
@@ -211,9 +211,9 @@ public class Fragment1 extends ListFragment   {
     		wifiCon.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
     		//wifiCon.wepTxKeyIndex = 0;
     	
-    		/*wifiCon.SSID = "\""+scanResult.SSID+"\"";//\"×ªÒå×Ö·û£¬´ú±í"
+    		/*wifiCon.SSID = "\""+scanResult.SSID+"\"";//\"è½¬ä¹‰å­—ç¬¦ï¼Œä»£è¡¨"
     		String jj="shgw201705";
-    		wifiCon.preSharedKey = "\""+12345678+"\"";//WPA-PSKÃÜÂë  
+    		wifiCon.preSharedKey = "\""+12345678+"\"";//WPA-PSKå¯†ç     
     		wifiCon.hiddenSSID = true;
     		
     		wifiCon.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
@@ -238,7 +238,7 @@ public class Fragment1 extends ListFragment   {
             WifiInfo wifiinfo = wifiManager.getConnectionInfo();
             wifimanager.getConnectionInfo();
             System.out.print(wifiinfo.getSSID());
-            System.out.print(wifiinfo.getNetworkId()); //RT139£¨WPA¼ÓÃÜ£© WIFIÁ¬½Ó    
+            System.out.print(wifiinfo.getNetworkId()); //RT139ï¼ˆWPAåŠ å¯†ï¼‰ WIFIè¿æ¥  
             
             /*Intent intent = new Intent(getActivity(),Trans.class); 
 	           startActivity(intent);*/
@@ -275,7 +275,7 @@ public class Fragment1 extends ListFragment   {
     	/*WifiInfo wifiinfo = wifiManager.getConnectionInfo(); 
     	System.out.print(wifiinfo.getNetworkId());
     	System.out.print(wifiinfo.getLinkSpeed());
-    	System.out.print(wifiinfo.getIpAddress()); ²âÊÔwifiÁ¬½ÓºÍÁ¬½ÓID¡¢speed */
+    	System.out.print(wifiinfo.getIpAddress()); æµ‹è¯•wifiè¿æ¥å’Œè¿æ¥IDã€speed */
         
         
   

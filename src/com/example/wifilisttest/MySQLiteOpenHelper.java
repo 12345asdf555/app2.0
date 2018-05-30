@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
 /*
- * ÃüÁî
+ * å‘½ä»¤
 cd G:\software\Program software\Android\adt-bundle-windows-x86_64-20140321\sdk\platform-tools
 adb shell
 cd /data/data/com.example.sqliteaction/databases/
@@ -21,15 +21,15 @@ sqlite3 StuDatabase.db
 	//insert into Student (id,name,tel,height) values('10003', 'XiaoMing', '15102530000', '165.58');
 	//insert into Student (id,name,tel) values('10004', 'XiaoWang', '15102530011');
 	
-	//ÒòÎª´ÖĞÄÉÙĞ©¸ø¡®)¡¯µ¼ÖÂ±ÀÀ£ Êı¾İ¿âÒ»¶¨×¢Òâ²»ÒªÆ´Ğ´´íÎó
-	//×¢ÒâÔÚÊ¹ÓÃsqliteÊ±ĞèÒªÌí¼Ó";"½áÊø
+	//å› ä¸ºç²—å¿ƒå°‘äº›ç»™â€˜)â€™å¯¼è‡´å´©æºƒ æ•°æ®åº“ä¸€å®šæ³¨æ„ä¸è¦æ‹¼å†™é”™è¯¯
+	//æ³¨æ„åœ¨ä½¿ç”¨sqliteæ—¶éœ€è¦æ·»åŠ ";"ç»“æŸ
 
-//Ìí¼Ó×Ô¶¨ÒåÀà ¼Ì³ĞSQLiteOpenHelper
+//æ·»åŠ è‡ªå®šä¹‰ç±» ç»§æ‰¿SQLiteOpenHelper
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
 	public Context mContext;
 	
-	//´´½¨Ñ§Éú±í(Ñ§ºÅ,ĞÕÃû,µç»°,Éí¸ß) Ö÷¼üÑ§ºÅ
+	//åˆ›å»ºå­¦ç”Ÿè¡¨(å­¦å·,å§“å,ç”µè¯,èº«é«˜) ä¸»é”®å­¦å·
 	public static final String createTableStu = "create table Tenghan (" +
 			"electricity test, " +
 			"voltage test, " +
@@ -45,7 +45,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 			"second test, " +
 			"status test)";
 	
-	//³éÏóÀà ±ØĞë¶¨ÒåÏÔÊ¾µÄ¹¹Ôìº¯Êı ÖØĞ´·½·¨ 
+	//æŠ½è±¡ç±» å¿…é¡»å®šä¹‰æ˜¾ç¤ºçš„æ„é€ å‡½æ•° é‡å†™æ–¹æ³• 
 	public MySQLiteOpenHelper(Context context, String name, CursorFactory factory, 
 			int version) {
 		super(context, name, factory, version);

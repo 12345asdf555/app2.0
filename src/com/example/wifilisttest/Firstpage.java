@@ -1,5 +1,9 @@
 package com.example.wifilisttest;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +21,29 @@ public class Firstpage extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_firstpage);
+		try {
+			
+			String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/IPconfig.txt";
+			File file = new File(releasepath);
+			if (!file.exists()) {  
+			    file.mkdirs();
+			    
+			    InputStream is = getResources().getAssets().open("IPconfig.txt");
+				FileOutputStream fos = new FileOutputStream(new File(releasepath)); 
+				byte[] buffer = new byte[1024];  
+	            int byteCount=0;                 
+	            while((byteCount=is.read(buffer))!=-1) {//å¾ªç¯ä»è¾“å…¥æµè¯»å– bufferå­—èŠ‚          
+	                fos.write(buffer, 0, byteCount);//å°†è¯»å–çš„è¾“å…¥æµå†™å…¥åˆ°è¾“å‡ºæµ  
+	            }  
+	            fos.flush();//åˆ·æ–°ç¼“å†²åŒº  
+	            is.close();  
+	            fos.close();
+			}  
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		Timer timer=new Timer();
 	    TimerTask timerTask=new TimerTask() {
@@ -37,26 +64,26 @@ public class Firstpage extends Activity {
 	    // TODO Auto-generated method stub  
 	    if(keyCode == KeyEvent.KEYCODE_BACK)  
 	       {    
-	           exitBy2Click();      //µ÷ÓÃË«»÷ÍË³öº¯Êı  
+	           exitBy2Click();      //è°ƒç”¨åŒå‡»é€€å‡ºå‡½æ•°  
 	       }  
 	    return false;  
 	}  
 	/** 
-	 * Ë«»÷ÍË³öº¯Êı 
-	 */  
+	 * åŒå‡»é€€å‡ºå‡½æ•° 
+	 */   
 	private static Boolean isExit = false;  
 	  
 	private void exitBy2Click() {  
 	    Timer tExit = null;  
 	    if (isExit == false) {  
-	        isExit = true; // ×¼±¸ÍË³ö    
+	        isExit = true; // å‡†å¤‡é€€å‡º     
 	        tExit = new Timer();  
 	        tExit.schedule(new TimerTask() {  
 	            @Override  
 	            public void run() {  
-	                isExit = false; // È¡ÏûÍË³ö  
+	                isExit = false; // å–æ¶ˆé€€å‡º
 	            }  
-	        }, 20); // Èç¹û2ÃëÖÓÄÚÃ»ÓĞ°´ÏÂ·µ»Ø¼ü£¬ÔòÆô¶¯¶¨Ê±Æ÷È¡Ïûµô¸Õ²ÅÖ´ĞĞµÄÈÎÎñ  
+	        }, 20); // å¦‚æœ2ç§’é’Ÿå†…æ²¡æœ‰æŒ‰ä¸‹è¿”å›é”®ï¼Œåˆ™å¯åŠ¨å®šæ—¶å™¨å–æ¶ˆæ‰åˆšæ‰æ‰§è¡Œçš„ä»»åŠ¡   
 	  
 	    } else {  
 	        finish();  
