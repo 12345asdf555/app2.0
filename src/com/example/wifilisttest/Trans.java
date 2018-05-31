@@ -558,96 +558,102 @@ public class Trans extends Activity {
                             wheelProgress=0;
                             for(int i=0;i<datas1.length;i+=28){
                             	
-                            	/*byte[] eleby = new byte[2];
-                            	System.arraycopy(datas1, i+2, eleby, 0, 2);
-                            	int eleint = (int)eleby[0]*256 + (int)eleby[1];
-                            	String electricity = Integer.valueOf(eleint).toString();*/
-                            	String electricity = Integer.valueOf((int)datas1[i+2]*256 + (int)datas1[i+3]).toString();
-                            	
-                            	/*byte[] volby = new byte[2];
-                            	System.arraycopy(datas1, i+4, volby, 0, 2); 
-                            	int volint = (int)volby[0]*256 + (int)volby[1];
-                            	String voltage = Integer.valueOf(volint).toString();*/
-                            	String voltage = Integer.valueOf((int)datas1[i+4]*256 + (int)datas1[i+5]).toString();
-                            	
-                            	/*byte[] senby = new byte[2];
-                            	System.arraycopy(datas1, i+6, senby, 0, 2); 
-                            	int senint = (int)senby[0]*256 + (int)senby[1];
-                            	String sensor_Num = Integer.valueOf(senint).toString();*/
-                            	String sensor_Num = Integer.valueOf((int)datas1[i+6]*256 + (int)datas1[i+7]).toString();
-                            	
-                            	/*byte[] macby = new byte[2];
-                            	System.arraycopy(datas1, i+8, macby, 0, 2); 
-                            	int macint = (int)macby[0]*256 + (int)macby[1];
-                            	String machine_id = Integer.valueOf(macint).toString();*/
-                            	String machine_id = Integer.valueOf((int)datas1[i+8]*256 + (int)datas1[i+9]).toString();
-                            
-                            	/*byte[] welby = new byte[2];
-                            	System.arraycopy(datas1, i+10, welby, 0, 2); 
-                            	int welint = (int)welby[0]*256 + (int)welby[1];
-                            	String welder_id = Integer.valueOf(welint).toString();*/
-                            	String welder_id = Integer.valueOf((int)datas1[i+10]*256 + (int)datas1[i+11]).toString();
-                            	
-                            	/*byte[] codby = new byte[4];
-                            	System.arraycopy(datas1, i+12, codby, 0, 4); 
-                            	int codint = (int)codby[0]*65536 + (int)codby[1]*4096 + (int)codby[2]*256 + (int)codby[3];
-                            	String code = Integer.valueOf(codint).toString();*/
-                            	String code = Integer.valueOf((int)datas1[i+12]*65536 + (int)datas1[i+13]*4096 + (int)datas1[i+14]*256 + (int)datas1[i+15]).toString();
-                            	
-                            	/*byte[] yeaby = new byte[1];
-                            	System.arraycopy(datas1, i+16, yeaby, 0, 1); 
-                            	int yeaint = (int)yeaby[0];
-                            	String year = Integer.valueOf(yeaint).toString();*/
-                            	String year = Integer.valueOf((int)datas1[i+16]).toString();
-                            	
-                            	/*byte[] monby = new byte[1];
-                            	System.arraycopy(datas1, i+17, monby, 0, 1); 
-                            	int monint = (int)monby[0];
-                            	String month = Integer.valueOf(monint).toString();*/
-                            	String month = Integer.valueOf((int)datas1[i+17]).toString();
-                            	
-                            	/*byte[] dayby = new byte[1];
-                            	System.arraycopy(datas1, i+18, dayby, 0, 1); 
-                            	int dayint = (int)dayby[0];
-                            	String day = Integer.valueOf(dayint).toString();*/
-                            	String day = Integer.valueOf((int)datas1[i+18]).toString();
-                            	
-                            	/*byte[] houby = new byte[1];
-                            	System.arraycopy(datas1, i+19, houby, 0, 1); 
-                            	int houint = (int)houby[0];
-                            	String hour = Integer.valueOf(houint).toString();*/
-                            	String hour = Integer.valueOf((int)datas1[i+19]).toString();
-                            	
-                            	/*byte[] minby = new byte[1];
-                            	System.arraycopy(datas1, i+20, minby, 0, 1); 
-                            	int minint = (int)minby[0];
-                            	String minute = Integer.valueOf(minint).toString();*/
-                            	String minute = Integer.valueOf((int)datas1[i+20]).toString();
-                            
-                            	/*byte[] secby = new byte[1];
-                            	System.arraycopy(datas1, i+21, secby, 0, 1); 
-                            	int secint = (int)secby[0];
-                            	String second = Integer.valueOf(secint).toString();*/
-                            	String second = Integer.valueOf((int)datas1[i+21]).toString();
-                            	
-                            	/*byte[] staby = new byte[1];
-                            	System.arraycopy(datas1, i+22, staby, 0, 1); 
-                            	int staint = (int)staby[0];
-                            	String status = Integer.valueOf(staint).toString();*/
-                            	String status = Integer.valueOf((int)datas1[i+22]).toString();
-                            	
-                            	inSql = "insert into Tenghan(electricity,voltage,sensor_Num,machine_id,welder_id,code,year,month,day,hour,minute,second,status) "
-                                		+ "values('"+ electricity +"','" + voltage + "','" + sensor_Num + "'"
-                                				+ ","+ "'" + machine_id + "','" + welder_id + "','" + code + "'"
-                                						+ ",'" + year + "','" + month + "','" + day + "','" + hour + "'"
-                                								+ ",'" + minute + "','" + second + "','" + status + "')";
-                                db.execSQL(inSql);
-                                int mid1 = datas1.length/28;
-                                rolldata=Math.round(((float) mid / mid1 ) * 360);
-                                pwTwo.setProgress2(rolldata);
-                                wheelProgress+=rolldata;
-                                mid++;
+                            	try{
+                            		
+                            		/*byte[] eleby = new byte[2];
+                                	System.arraycopy(datas1, i+2, eleby, 0, 2);
+                                	int eleint = (int)eleby[0]*256 + (int)eleby[1];
+                                	String electricity = Integer.valueOf(eleint).toString();*/
+                                	String electricity = Integer.valueOf((int)datas1[i+2]*256 + (int)datas1[i+3]).toString();
+                                	
+                                	/*byte[] volby = new byte[2];
+                                	System.arraycopy(datas1, i+4, volby, 0, 2); 
+                                	int volint = (int)volby[0]*256 + (int)volby[1];
+                                	String voltage = Integer.valueOf(volint).toString();*/
+                                	String voltage = Integer.valueOf((int)datas1[i+4]*256 + (int)datas1[i+5]).toString();
+                                	
+                                	/*byte[] senby = new byte[2];
+                                	System.arraycopy(datas1, i+6, senby, 0, 2); 
+                                	int senint = (int)senby[0]*256 + (int)senby[1];
+                                	String sensor_Num = Integer.valueOf(senint).toString();*/
+                                	String sensor_Num = Integer.valueOf((int)datas1[i+6]*256 + (int)datas1[i+7]).toString();
+                                	
+                                	/*byte[] macby = new byte[2];
+                                	System.arraycopy(datas1, i+8, macby, 0, 2); 
+                                	int macint = (int)macby[0]*256 + (int)macby[1];
+                                	String machine_id = Integer.valueOf(macint).toString();*/
+                                	String machine_id = Integer.valueOf((int)datas1[i+8]*256 + (int)datas1[i+9]).toString();
                                 
+                                	/*byte[] welby = new byte[2];
+                                	System.arraycopy(datas1, i+10, welby, 0, 2); 
+                                	int welint = (int)welby[0]*256 + (int)welby[1];
+                                	String welder_id = Integer.valueOf(welint).toString();*/
+                                	String welder_id = Integer.valueOf((int)datas1[i+10]*256 + (int)datas1[i+11]).toString();
+                                	
+                                	/*byte[] codby = new byte[4];
+                                	System.arraycopy(datas1, i+12, codby, 0, 4); 
+                                	int codint = (int)codby[0]*65536 + (int)codby[1]*4096 + (int)codby[2]*256 + (int)codby[3];
+                                	String code = Integer.valueOf(codint).toString();*/
+                                	String code = Integer.valueOf((int)datas1[i+12]*65536 + (int)datas1[i+13]*4096 + (int)datas1[i+14]*256 + (int)datas1[i+15]).toString();
+                                	
+                                	/*byte[] yeaby = new byte[1];
+                                	System.arraycopy(datas1, i+16, yeaby, 0, 1); 
+                                	int yeaint = (int)yeaby[0];
+                                	String year = Integer.valueOf(yeaint).toString();*/
+                                	String year = Integer.valueOf((int)datas1[i+16]).toString();
+                                	
+                                	/*byte[] monby = new byte[1];
+                                	System.arraycopy(datas1, i+17, monby, 0, 1); 
+                                	int monint = (int)monby[0];
+                                	String month = Integer.valueOf(monint).toString();*/
+                                	String month = Integer.valueOf((int)datas1[i+17]).toString();
+                                	
+                                	/*byte[] dayby = new byte[1];
+                                	System.arraycopy(datas1, i+18, dayby, 0, 1); 
+                                	int dayint = (int)dayby[0];
+                                	String day = Integer.valueOf(dayint).toString();*/
+                                	String day = Integer.valueOf((int)datas1[i+18]).toString();
+                                	
+                                	/*byte[] houby = new byte[1];
+                                	System.arraycopy(datas1, i+19, houby, 0, 1); 
+                                	int houint = (int)houby[0];
+                                	String hour = Integer.valueOf(houint).toString();*/
+                                	String hour = Integer.valueOf((int)datas1[i+19]).toString();
+                                	
+                                	/*byte[] minby = new byte[1];
+                                	System.arraycopy(datas1, i+20, minby, 0, 1); 
+                                	int minint = (int)minby[0];
+                                	String minute = Integer.valueOf(minint).toString();*/
+                                	String minute = Integer.valueOf((int)datas1[i+20]).toString();
+                                
+                                	/*byte[] secby = new byte[1];
+                                	System.arraycopy(datas1, i+21, secby, 0, 1); 
+                                	int secint = (int)secby[0];
+                                	String second = Integer.valueOf(secint).toString();*/
+                                	String second = Integer.valueOf((int)datas1[i+21]).toString();
+                                	
+                                	/*byte[] staby = new byte[1];
+                                	System.arraycopy(datas1, i+22, staby, 0, 1); 
+                                	int staint = (int)staby[0];
+                                	String status = Integer.valueOf(staint).toString();*/
+                                	String status = Integer.valueOf((int)datas1[i+22]).toString();
+                                	
+                                	inSql = "insert into Tenghan(electricity,voltage,sensor_Num,machine_id,welder_id,code,year,month,day,hour,minute,second,status) "
+                                    		+ "values('"+ electricity +"','" + voltage + "','" + sensor_Num + "'"
+                                    				+ ","+ "'" + machine_id + "','" + welder_id + "','" + code + "'"
+                                    						+ ",'" + year + "','" + month + "','" + day + "','" + hour + "'"
+                                    								+ ",'" + minute + "','" + second + "','" + status + "')";
+                                    db.execSQL(inSql);
+                                    int mid1 = datas1.length/28;
+                                    rolldata=Math.round(((float) mid / mid1 ) * 360);
+                                    pwTwo.setProgress2(rolldata);
+                                    wheelProgress+=rolldata;
+                                    mid++;
+                            		
+                            	}catch(Exception e){
+                            		e.printStackTrace();
+                            	}
+                            	
                             }
                             
                             

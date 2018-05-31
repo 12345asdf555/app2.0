@@ -361,128 +361,133 @@ public class Trans2 extends Activity {
                     Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
 		           	if (c.moveToFirst()) {
 		                 do {
- 			                    String electricity = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("electricity")))));
- 			                    if(electricity.length()!=4){
- 			                    	int a=4-electricity.length();
- 			                    	for(int ii=0;ii<a;ii++){
- 			                    		electricity=i+electricity;
- 			                    	}
- 			                    }
- 			                   String voltage = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("voltage")))));
- 			                   if(voltage.length()!=4){
-			                    	int a=4-voltage.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		voltage=i+voltage;
-			                    	}
-			                    }
- 			                   String sensor_Num = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("sensor_Num")))));
- 			                   if(sensor_Num.length()!=4){
-   			                    	int a=4-sensor_Num.length();
-   			                    	for(int ii=0;ii<a;ii++){
-   			                    		sensor_Num=i+sensor_Num;
-   			                    	}
-   			                    }
- 			                   String machine_id = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("machine_id")))));
- 			                   if(machine_id.length()!=4){
-			                    	int a=4-machine_id.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		machine_id=i+machine_id;
-			                    	}
-			                    }
- 			                   String welder_id = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("welder_id")))));
- 			                   if(welder_id.length()!=4){
-			                    	int a=4-welder_id.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		welder_id=i+welder_id;
-			                    	}
-			                    }
- 			                   String code = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("code")))));
- 			                   if(code.length()!=8){
-			                    	int a=8-code.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		code=i+code;
-			                    	}
-			                    }
- 			                   String year = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("year")))));
- 			                   if(year.length()!=2){
-			                    	int a=2-year.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		year=i+year;
-			                    	}
-			                    }
- 			                   String month = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("month")))));
- 			                   if(month.length()!=2){
-			                    	int a=2-month.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		month=i+month;
-			                    	}
-			                    }
- 			                   String day = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("day")))));
- 			                   if(day.length()!=2){
-			                    	int a=2-day.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		day=i+day;
-			                    	}
-			                    }
- 			                   String hour = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("hour")))));
- 			                   if(hour.length()!=2){
-			                    	int a=2-hour.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		hour=i+hour;
-			                    	}
-			                    }
- 			                   String minute = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("minute")))));
- 			                   if(minute.length()!=2){
-			                    	int a=2-minute.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		minute=i+minute;
-			                    	}
-			                    }
- 			                   String second = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("second")))));
- 			                   if(second.length()!=2){
-			                    	int a=2-second.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		second=i+second;
-			                    	}
-			                    }
- 			                   String status = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("status")))));
- 			                   if(status.length()!=2){
-			                    	int a=2-status.length();
-			                    	for(int ii=0;ii<a;ii++){
-			                    		status=i+status;
-			                    	}
-			                    }
-		                  
-		
-		                        l = o + electricity + voltage + sensor_Num 
-		                        	  + machine_id + welder_id + code + year 
-		                        	  + month + day + hour + minute + second + status + p;
-		                        
-		                        l = l.toUpperCase();
-		                        
-		                        /*String sql = "update Tenghan set status = 01";   
-		                        db.execSQL(sql);*/
-		                        
-		                        if(socketChannel!=null){
-		        			        try {
-		        			        	socketChannel.writeAndFlush(l).sync();
-		        					} catch (InterruptedException e) {
-		        						socketChannel = null;
-		        						e.printStackTrace();
-		        					}
-		        		        }
+		                	 try{
+		                		 String electricity = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("electricity")))));
+	 			                    if(electricity.length()!=4){
+	 			                    	int a=4-electricity.length();
+	 			                    	for(int ii=0;ii<a;ii++){
+	 			                    		electricity=i+electricity;
+	 			                    	}
+	 			                    }
+	 			                   String voltage = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("voltage")))));
+	 			                   if(voltage.length()!=4){
+				                    	int a=4-voltage.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		voltage=i+voltage;
+				                    	}
+				                    }
+	 			                   String sensor_Num = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("sensor_Num")))));
+	 			                   if(sensor_Num.length()!=4){
+	   			                    	int a=4-sensor_Num.length();
+	   			                    	for(int ii=0;ii<a;ii++){
+	   			                    		sensor_Num=i+sensor_Num;
+	   			                    	}
+	   			                    }
+	 			                   String machine_id = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("machine_id")))));
+	 			                   if(machine_id.length()!=4){
+				                    	int a=4-machine_id.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		machine_id=i+machine_id;
+				                    	}
+				                    }
+	 			                   String welder_id = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("welder_id")))));
+	 			                   if(welder_id.length()!=4){
+				                    	int a=4-welder_id.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		welder_id=i+welder_id;
+				                    	}
+				                    }
+	 			                   String code = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("code")))));
+	 			                   if(code.length()!=8){
+				                    	int a=8-code.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		code=i+code;
+				                    	}
+				                    }
+	 			                   String year = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("year")))));
+	 			                   if(year.length()!=2){
+				                    	int a=2-year.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		year=i+year;
+				                    	}
+				                    }
+	 			                   String month = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("month")))));
+	 			                   if(month.length()!=2){
+				                    	int a=2-month.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		month=i+month;
+				                    	}
+				                    }
+	 			                   String day = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("day")))));
+	 			                   if(day.length()!=2){
+				                    	int a=2-day.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		day=i+day;
+				                    	}
+				                    }
+	 			                   String hour = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("hour")))));
+	 			                   if(hour.length()!=2){
+				                    	int a=2-hour.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		hour=i+hour;
+				                    	}
+				                    }
+	 			                   String minute = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("minute")))));
+	 			                   if(minute.length()!=2){
+				                    	int a=2-minute.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		minute=i+minute;
+				                    	}
+				                    }
+	 			                   String second = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("second")))));
+	 			                   if(second.length()!=2){
+				                    	int a=2-second.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		second=i+second;
+				                    	}
+				                    }
+	 			                   String status = Integer.toHexString((Integer.valueOf(c.getString(c.getColumnIndex("status")))));
+	 			                   if(status.length()!=2){
+				                    	int a=2-status.length();
+				                    	for(int ii=0;ii<a;ii++){
+				                    		status=i+status;
+				                    	}
+				                    }
+			                  
+			                        l = o + electricity + voltage + sensor_Num 
+			                        	  + machine_id + welder_id + code + year 
+			                        	  + month + day + hour + minute + second + status + p;
+			                        
+			                        l = l.toUpperCase();
+			                        
+			                        /*String sql = "update Tenghan set status = 01";   
+			                        db.execSQL(sql);*/
+			                        
+			                        if(socketChannel!=null){
+			        			        try {
+			        			        	socketChannel.writeAndFlush(l).sync();
+			        					} catch (InterruptedException e) {
+			        						socketChannel = null;
+			        						e.printStackTrace();
+			        					}
+			        		        }
 
-		                        b++;
-			                    int d=Math.round(((float) b / c.getCount() ) * 360);
-                                pwTwo.setProgress2(d);
-                                wheelProgress=d;   
-                                
-                                l="";
-                                
-		                        //pwTwo.incrementProgress();
-		            			//wheelProgress++;
-                                //System.out.println(l); 
-                                
+			                        b++;
+				                    int d=Math.round(((float) b / c.getCount() ) * 360);
+	                                pwTwo.setProgress2(d);
+	                                wheelProgress=d;   
+	                                
+	                                l="";
+	                                
+			                        //pwTwo.incrementProgress();
+			            			//wheelProgress++;
+	                                //System.out.println(l); 
+	                                
+		                		 
+		                	 }catch(Exception e){
+		                		 e.printStackTrace();
+		                	 }
+		                	 
                         } while (c.moveToNext());
                     }
                     c.close();
