@@ -38,6 +38,11 @@ public class ConnectionListener implements ChannelFutureListener {
 		    	Button startBtn1 = (Button) convertView.findViewById(R.id.btn_start2);
 		    	startBtn1.setEnabled(true);*/
 		    	client.trans2.socketChannel = socketChannel;
+		    	
+		    	//测试用
+		    	//client.trans2.startBtn1.setEnabled(true);
+		    	
+		    	//正式
 		    	if(client.count != 0){
 		    	   client.trans2.startBtn1.setEnabled(true);
 		    	}

@@ -20,6 +20,9 @@ import android.widget.Toast;
 import io.netty.channel.socket.SocketChannel;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +39,7 @@ import com.example.wifilisttest.MySQLiteOpenHelper;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -103,6 +107,7 @@ public class Trans2 extends Activity {
     public Button startBtn1;
     boolean flag = false;
 	int i=0;
+	public String l = "";
 	int count=0;
 	public Client client;
 
@@ -117,12 +122,11 @@ public class Trans2 extends Activity {
 		Intent intent = getIntent();
 		String ip = intent.getStringExtra("ip");
 		
-        SQLiteDatabase db = sqlHelper.getWritableDatabase();
-        
+        /*SQLiteDatabase db = sqlHelper.getWritableDatabase();
         String sql = "select count(*) from Tenghan";  
         Cursor cursor = db.rawQuery(sql, null);  
         cursor.moveToFirst();  
-        long count = cursor.getLong(0);  
+        long count = cursor.getLong(0);*/
         
         
         /*Cursor c = db.query("Tenghan", null, null, null, null, null, null, null);
@@ -134,31 +138,31 @@ public class Trans2 extends Activity {
         			}
         			//count++;
         		}while(c.moveToNext());
-        }
-        	String cou=Integer.toString(count);*/
-        	pwTwo.setText("待上传数据"+count+"条");
-        	client = new Client(this,ip,count);
-        	if(socketChannel == null){
-        		new Thread(cli).start();
         	}
-        	
-        	/*if(count!=0){
-        		startBtn1.setEnabled(true);
-        	}*/
-        	/*pwTwo.postInvalidate();*/
-
-        
-        
-/*
-        
-        btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {*/
-         	
+        String cou=Integer.toString(count);*/
+		
+		try {  
+			//读取txt数据
+        	String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/date.txt";
+        	FileInputStream inputStream = new FileInputStream(releasepath);
+        	int length = inputStream.available();
+        	byte[] bytes = new byte[length];  
+            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();  
+            while (inputStream.read(bytes) != -1) {  
+                arrayOutputStream.write(bytes, 0, bytes.length);   
+            }  
+            inputStream.close();  
+            arrayOutputStream.close();
+            count = length/28;
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		
+    	pwTwo.setText("待上传数据"+count+"条");
+    	client = new Client(this,ip,count);
+    	if(socketChannel == null){
+    		new Thread(cli).start();
+    	}
         
 		startBtn1.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -226,7 +230,54 @@ public class Trans2 extends Activity {
 		        try{
 				while (wheelProgress < 360){
 
-            	
+					try {  
+						
+						/*String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/date.txt";
+	                	FileInputStream inputStream = new FileInputStream(releasepath);*/
+						
+						//读取txt数据
+	                	String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/date.txt";
+	                	FileInputStream inputStream = new FileInputStream(releasepath);
+	                	int length = inputStream.available();
+	                	byte[] bytes = new byte[length];  
+	                    ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();  
+	                    while (inputStream.read(bytes) != -1) {  
+	                        arrayOutputStream.write(bytes, 0, bytes.length);
+	                        int d=Math.round(((float) bytes.length / length ) * 360);
+                            pwTwo.setProgress2(d);
+                            wheelProgress=d;   
+	                    }  
+	                    inputStream.close();  
+	                    arrayOutputStream.close();
+	                    
+	                    l = new String(bytes,"ISO-8859-1");
+	                    
+	                    if(socketChannel!=null){
+        			        try {
+        			        	socketChannel.writeAndFlush(l).sync();
+        					} catch (InterruptedException e) {
+        						socketChannel = null;
+        						e.printStackTrace();
+        					}
+        		        }
+	                    
+	                    //发送成功后清空txt
+	                    l = "";
+	                    FileOutputStream outputStream = new FileOutputStream(releasepath);
+	                    byte[] datas1 = l.getBytes("ISO-8859-1");
+                		outputStream.write(datas1);
+                        outputStream.flush();  
+                        outputStream.close();
+	                    
+	                    /*is = getResources().getAssets().open("IPconfig.txt");  
+	                    byte[] bytes = new byte[is.available()];  
+	                    is.read(bytes);  
+	                    String ipconfig1 = new String(bytes);  
+	                    String[] ipconfig2 = ipconfig1.split(",");
+	                    ipconfig = ipconfig2[ipconfig2.length-1];*/
+	                } catch (IOException e) {  
+	                    e.printStackTrace();  
+	                }
 					
 					/*try{
 
@@ -350,8 +401,8 @@ public class Trans2 extends Activity {
                         // �жϿͻ��˺ͷ������Ƿ����ӳɹ�
                         System.out.println(socket.isConnected());*/
                     	
-            	
-                    String i="0";
+            	    //处理数据
+                    /*String i="0";
                     String o="FE24";
                     String p="00000000FD";
                     String l="";
@@ -460,8 +511,8 @@ public class Trans2 extends Activity {
 			                        
 			                        l = l.toUpperCase();
 			                        
-			                        /*String sql = "update Tenghan set status = 01";   
-			                        db.execSQL(sql);*/
+			                        String sql = "update Tenghan set status = 01";   
+			                        db.execSQL(sql);
 			                        
 			                        if(socketChannel!=null){
 			        			        try {
@@ -492,7 +543,7 @@ public class Trans2 extends Activity {
                     }
                     c.close();
                     
-                    db.execSQL("delete from Tenghan");
+                    db.execSQL("delete from Tenghan");*/
                     
                     /*byte[] bb3=new byte[l.length()/2];
 					for (int i1 = 0; i1 < bb3.length; i1++)

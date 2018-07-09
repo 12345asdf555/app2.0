@@ -307,12 +307,12 @@ public class ProgressWheel extends View {
 		isSpinning = false;
 		progress = i;
 		if(Math.round(((float) progress / 360 ) * 100) < 100){
-			setText("采集:" + Math.round(((float) progress / 360 ) * 100) + "%");
+			setText("采集中:" + Math.round(((float) progress / 360 ) * 100) + "%");
 			//setText(Math.round(((float) progress / 360) * 100) + "%");
 			spinHandler.sendEmptyMessage(0);
 		}
 		else{
-			setText("完成");
+			setText("采集完成，请稍候");
 			spinHandler.sendEmptyMessage(0);
 		}
 	}
@@ -321,12 +321,12 @@ public class ProgressWheel extends View {
 		isSpinning = false;
 		progress = i;
 		if(Math.round(((float) progress / 360 ) * 100) < 100){
-			setText("处理:" + Math.round(((float) progress / 360 ) * 100) + "%");
+			setText("处理中:" + Math.round(((float) progress / 360 ) * 100) + "%");
 			//setText(Math.round(((float) progress / 360) * 100) + "%");
 			spinHandler.sendEmptyMessage(0);
 		}
 		else{
-			setText("完成");
+			setText("数据处理完成，正在上传");
 			spinHandler.sendEmptyMessage(0);
 		}
 	}

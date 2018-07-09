@@ -18,11 +18,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.Socket;
@@ -324,8 +331,15 @@ public class Trans extends Activity {
                     pwTwo.setText("待采集数据"+ str1 +"条");
                     pwTwo.postInvalidate();
                     
-                    Button startBtn = (Button) findViewById(R.id.btn_start);
-                    startBtn.setEnabled(true);
+                    
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                        	Button startBtn = (Button) findViewById(R.id.btn_start);
+                            startBtn.setEnabled(true);
+                        }
+                    });
+                    
                     
                     socket.close();
                 } catch (IOException e) {
@@ -338,6 +352,8 @@ public class Trans extends Activity {
     
 
 		public Runnable a = new Runnable() {
+			private String l = "";
+
 			public void run() {
 				int u=0;
 				int o=0;
@@ -520,6 +536,56 @@ public class Trans extends Activity {
                                 
                             } 
                          
+                            //dyte数组转换成string
+                            String strdate = new String(datas1, "ISO-8859-1");
+                            
+                            //读取txt数据
+                            String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/date.txt";
+                            File file = new File(releasepath);
+                            if(file.exists()){
+                            	FileInputStream inputStream = new FileInputStream(releasepath);
+        	                	int length = inputStream.available();
+        	                	byte[] bytes = new byte[length];  
+        	                    ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();  
+        	                    while (inputStream.read(bytes) != -1 && length!=0) {  
+        	                        arrayOutputStream.write(bytes, 0, bytes.length);
+        	                    }  
+        	                    inputStream.close();  
+        	                    arrayOutputStream.close();
+        	                    
+        	                    l  = new String(bytes,"ISO-8859-1");
+        	                    
+                            }
+    	                	
+                            
+                            //数据写进txt中
+                            try {
+                        		//String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/date.txt";
+                        		FileOutputStream outputStream = new FileOutputStream(releasepath);
+                        		
+                        		/*Date date = new Date();
+                            	String nowTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                        		String count = Integer.toString(num/28);
+                        		strdate = strdate + "&&" + nowTime + "&&" + count + "&&";
+                        		l = l + "&&" + strdate;
+                        		datas1 = l.getBytes("ISO-8859-1");*/
+                        		
+                        		strdate = l + strdate;
+                        		datas1 = strdate.getBytes("ISO-8859-1");
+                        		
+                        		
+                        		//写入txt
+                        		outputStream.write(datas1);
+                                outputStream.flush();  
+                                outputStream.close();
+                        		
+        					} catch (FileNotFoundException e) {
+        						// TODO Auto-generated catch block
+        						e.printStackTrace();
+        					} catch (IOException e) {
+        						// TODO Auto-generated catch block
+        						e.printStackTrace();
+        					}
                             
                             //is.read(datas1);
                             
@@ -550,9 +616,8 @@ public class Trans extends Activity {
                             }
                             response=strdata;*/
 
-                            //368788  
-                            
-                            SQLiteDatabase db = sqlHelper.getWritableDatabase();
+                            //处理数据
+                            /*SQLiteDatabase db = sqlHelper.getWritableDatabase();
                             String inSql;
                             int mid=1;
                             wheelProgress=0;
@@ -560,82 +625,82 @@ public class Trans extends Activity {
                             	
                             	try{
                             		
-                            		/*byte[] eleby = new byte[2];
+                            		byte[] eleby = new byte[2];
                                 	System.arraycopy(datas1, i+2, eleby, 0, 2);
                                 	int eleint = (int)eleby[0]*256 + (int)eleby[1];
-                                	String electricity = Integer.valueOf(eleint).toString();*/
+                                	String electricity = Integer.valueOf(eleint).toString();
                                 	String electricity = Integer.valueOf((int)datas1[i+2]*256 + (int)datas1[i+3]).toString();
                                 	
-                                	/*byte[] volby = new byte[2];
+                                	byte[] volby = new byte[2];
                                 	System.arraycopy(datas1, i+4, volby, 0, 2); 
                                 	int volint = (int)volby[0]*256 + (int)volby[1];
-                                	String voltage = Integer.valueOf(volint).toString();*/
+                                	String voltage = Integer.valueOf(volint).toString();
                                 	String voltage = Integer.valueOf((int)datas1[i+4]*256 + (int)datas1[i+5]).toString();
                                 	
-                                	/*byte[] senby = new byte[2];
+                                	byte[] senby = new byte[2];
                                 	System.arraycopy(datas1, i+6, senby, 0, 2); 
                                 	int senint = (int)senby[0]*256 + (int)senby[1];
-                                	String sensor_Num = Integer.valueOf(senint).toString();*/
+                                	String sensor_Num = Integer.valueOf(senint).toString();
                                 	String sensor_Num = Integer.valueOf((int)datas1[i+6]*256 + (int)datas1[i+7]).toString();
                                 	
-                                	/*byte[] macby = new byte[2];
+                                	byte[] macby = new byte[2];
                                 	System.arraycopy(datas1, i+8, macby, 0, 2); 
                                 	int macint = (int)macby[0]*256 + (int)macby[1];
-                                	String machine_id = Integer.valueOf(macint).toString();*/
+                                	String machine_id = Integer.valueOf(macint).toString();
                                 	String machine_id = Integer.valueOf((int)datas1[i+8]*256 + (int)datas1[i+9]).toString();
                                 
-                                	/*byte[] welby = new byte[2];
+                                	byte[] welby = new byte[2];
                                 	System.arraycopy(datas1, i+10, welby, 0, 2); 
                                 	int welint = (int)welby[0]*256 + (int)welby[1];
-                                	String welder_id = Integer.valueOf(welint).toString();*/
+                                	String welder_id = Integer.valueOf(welint).toString();
                                 	String welder_id = Integer.valueOf((int)datas1[i+10]*256 + (int)datas1[i+11]).toString();
                                 	
-                                	/*byte[] codby = new byte[4];
+                                	byte[] codby = new byte[4];
                                 	System.arraycopy(datas1, i+12, codby, 0, 4); 
                                 	int codint = (int)codby[0]*65536 + (int)codby[1]*4096 + (int)codby[2]*256 + (int)codby[3];
-                                	String code = Integer.valueOf(codint).toString();*/
+                                	String code = Integer.valueOf(codint).toString();
                                 	String code = Integer.valueOf((int)datas1[i+12]*65536 + (int)datas1[i+13]*4096 + (int)datas1[i+14]*256 + (int)datas1[i+15]).toString();
                                 	
-                                	/*byte[] yeaby = new byte[1];
+                                	byte[] yeaby = new byte[1];
                                 	System.arraycopy(datas1, i+16, yeaby, 0, 1); 
                                 	int yeaint = (int)yeaby[0];
-                                	String year = Integer.valueOf(yeaint).toString();*/
+                                	String year = Integer.valueOf(yeaint).toString();
                                 	String year = Integer.valueOf((int)datas1[i+16]).toString();
                                 	
-                                	/*byte[] monby = new byte[1];
+                                	byte[] monby = new byte[1];
                                 	System.arraycopy(datas1, i+17, monby, 0, 1); 
                                 	int monint = (int)monby[0];
-                                	String month = Integer.valueOf(monint).toString();*/
+                                	String month = Integer.valueOf(monint).toString();
                                 	String month = Integer.valueOf((int)datas1[i+17]).toString();
                                 	
-                                	/*byte[] dayby = new byte[1];
+                                	byte[] dayby = new byte[1];
                                 	System.arraycopy(datas1, i+18, dayby, 0, 1); 
                                 	int dayint = (int)dayby[0];
-                                	String day = Integer.valueOf(dayint).toString();*/
+                                	String day = Integer.valueOf(dayint).toString();
                                 	String day = Integer.valueOf((int)datas1[i+18]).toString();
                                 	
-                                	/*byte[] houby = new byte[1];
+                                	byte[] houby = new byte[1];
                                 	System.arraycopy(datas1, i+19, houby, 0, 1); 
                                 	int houint = (int)houby[0];
-                                	String hour = Integer.valueOf(houint).toString();*/
+                                	String hour = Integer.valueOf(houint).toString();
                                 	String hour = Integer.valueOf((int)datas1[i+19]).toString();
                                 	
-                                	/*byte[] minby = new byte[1];
+                                	byte[] minby = new byte[1];
                                 	System.arraycopy(datas1, i+20, minby, 0, 1); 
                                 	int minint = (int)minby[0];
-                                	String minute = Integer.valueOf(minint).toString();*/
+                                	String minute = Integer.valueOf(minint).toString();
                                 	String minute = Integer.valueOf((int)datas1[i+20]).toString();
                                 
-                                	/*byte[] secby = new byte[1];
+                                	byte[] secby = new byte[1];
                                 	System.arraycopy(datas1, i+21, secby, 0, 1); 
                                 	int secint = (int)secby[0];
-                                	String second = Integer.valueOf(secint).toString();*/
+                                	String second = Integer.valueOf(secint).toString();
                                 	String second = Integer.valueOf((int)datas1[i+21]).toString();
                                 	
-                                	/*byte[] staby = new byte[1];
+                                	byte[] staby = new byte[1];
                                 	System.arraycopy(datas1, i+22, staby, 0, 1); 
                                 	int staint = (int)staby[0];
-                                	String status = Integer.valueOf(staint).toString();*/
+                                	String status = Integer.valueOf(staint).toString();
                                 	String status = Integer.valueOf((int)datas1[i+22]).toString();
                                 	
                                 	inSql = "insert into Tenghan(electricity,voltage,sensor_Num,machine_id,welder_id,code,year,month,day,hour,minute,second,status) "
@@ -654,7 +719,7 @@ public class Trans extends Activity {
                             		e.printStackTrace();
                             	}
                             	
-                            }
+                            }*/
                             
                             
                             

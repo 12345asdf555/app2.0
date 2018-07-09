@@ -89,7 +89,6 @@ public class Loading extends Activity {
                     }
                     ipconfig = new String(bytes,"UTF-8");
                     
-                    
                     /*is = getResources().getAssets().open("IPconfig.txt");  
                     byte[] bytes = new byte[is.available()];  
                     is.read(bytes);  
@@ -155,7 +154,6 @@ public class Loading extends Activity {
                 	}
                 }
                 ipconfig = new String(bytes,"UTF-8");
-                
                 
                 /*is = getResources().getAssets().open("IPconfig.txt");  
                 byte[] bytes = new byte[is.available()];  
