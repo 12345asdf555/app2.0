@@ -65,7 +65,7 @@ public class Loading extends Activity {
             	
             	InputStream is = null;   
                 try {  
-                	String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/IPconfig.txt";
+                	String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/ipconfig.txt";
                 	FileInputStream inputStream = new FileInputStream(releasepath);
                 	byte[] bytes = new byte[100];  
                     ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();  
@@ -131,7 +131,7 @@ public class Loading extends Activity {
 			final EditText inputServer = new EditText(Loading.this);  
 			
 			try {  
-            	String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/IPconfig.txt";
+            	String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/ipconfig.txt";
             	FileInputStream inputStream = new FileInputStream(releasepath);
             	byte[] bytes = new byte[100];  
                 ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();  
@@ -175,7 +175,7 @@ public class Loading extends Activity {
 				public void onClick(DialogInterface dialog, int which) {  
 					ipconfig = inputServer.getText().toString(); 
                 	try {
-                		String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/IPconfig.txt";
+                		String releasepath = getApplicationContext().getFilesDir().getAbsolutePath()+"/ipconfig.txt";
                 		FileOutputStream outputStream = new FileOutputStream(releasepath);
                 		outputStream.write(ipconfig.getBytes());  
                         outputStream.flush();  

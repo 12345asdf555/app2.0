@@ -148,7 +148,7 @@ public class Trans2 extends Activity {
         	int length = inputStream.available();
         	byte[] bytes = new byte[length];  
             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();  
-            while (inputStream.read(bytes) != -1) {  
+            while (inputStream.read(bytes) != -1 && length != 0) {  
                 arrayOutputStream.write(bytes, 0, bytes.length);   
             }  
             inputStream.close();  
@@ -257,7 +257,7 @@ public class Trans2 extends Activity {
         			        	socketChannel.writeAndFlush(l).sync();
         					} catch (InterruptedException e) {
         						socketChannel = null;
-        						e.printStackTrace();
+        						e.printStackTrace(); 
         					}
         		        }
 	                    
